@@ -1,0 +1,8 @@
+numpy
+streamlit
+gwpy
+pycbc
+pesummary
+seaborn
+healpy
+ligo.skymap
