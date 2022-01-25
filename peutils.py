@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
-import requests, os, io
+import requests, os, io, json
 import tempfile
 
 from gwpy.timeseries import TimeSeries
@@ -140,3 +140,13 @@ def get_params_intersect(sample_dict, chosenlist):
         allparams = allparams.intersection(thisparam)
     return allparams
  
+
+# -- Get the GWTC catalog
+#@st.cache
+def get_pe_url(event):
+    url = 'https://www.gw-openscience.org/eventapi/json/GWTC/'
+    response = requests.get(url)
+    gwtc = json.loads(response.json())
+    print(gwtc)
+
+# -- Method to find event in GWTC catalog
