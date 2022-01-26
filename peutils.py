@@ -66,7 +66,10 @@ def load_multiple_events(chosenlist):
         samples = load_samples(chosen)
         try:
             #-- GWTC-2
-            sample_dict[chosen] = samples.samples_dict['PublicationSamples']
+            # sample_dict[chosen] = samples.samples_dict['PublicationSamples']
+
+            # -- GWTC-3
+            sample_dict[chosen] = samples.samples_dict['C01:IMRPhenomXPHM']
         except:
             #-- GWTC-1
             sample_dict[chosen] = samples.samples_dict
@@ -78,7 +81,7 @@ def load_multiple_events(chosenlist):
 
 # -- Load PE samples from web
 @st.cache
-def load_samples(event, waveform=False):
+def load_samples(event, waveform=False, gwtc=True):
 
     if waveform:
         fn = '{0}_waveform.h5'.format(event)
@@ -86,6 +89,8 @@ def load_samples(event, waveform=False):
         fn = '{0}_small.h5'.format(event)
         
     url = 'https://labcit.ligo.caltech.edu/~jkanner/demo/pe/small-pe-gwtc2/{0}'.format(fn)
+    if gwtc:
+        url = get_pe_url(event)
 
     try: 
         r = requests.get(url)
@@ -145,8 +150,27 @@ def get_params_intersect(sample_dict, chosenlist):
 #@st.cache
 def get_pe_url(event):
     url = 'https://www.gw-openscience.org/eventapi/json/GWTC/'
-    response = requests.get(url)
-    gwtc = json.loads(response.json())
-    print(gwtc)
+    gwtc = requests.get(url).json()
+    
+    for event_id, info in gwtc['events'].items():
+        if info['commonName'] == event:
+            # -- Grab single event JSON
+            evurl = info['jsonurl']
+            eventinfo = requests.get(evurl).json()
 
-# -- Method to find event in GWTC catalog
+            # -- Find PE data URL
+            for peset, peinfo in eventinfo['events'][event_id]['parameters'].items():
+                if peinfo['is_preferred'] and (peinfo['pipeline_type'] == 'pe'):
+                    return peinfo['data_url']
+
+
+if __name__ == '__main__':
+    get_pe_url('cow')
+    #print(get_pe_url('GW150914'))
+    #print(get_pe_url('GW170817'))
+
+    samples = load_samples('GW200225_060421', gwtc=True)
+    print(samples)
+
+
+
