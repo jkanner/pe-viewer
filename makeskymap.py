@@ -10,7 +10,7 @@ lock = RendererAgg.lock
 
 
 def make_skymap(chosenlist):
-
+    aprx_dict = {}
     for ev in chosenlist:
         st.markdown("### Skymap for {0}".format(ev))        
         # if ev is None: continue
@@ -29,9 +29,10 @@ def make_skymap(chosenlist):
                 st.pyplot(fig)
 
         else:
-            # -- GWTC-2
+            # -- GWTC-3
             data = load_samples(ev)
+            aprx_dict[ev] = st.radio("Select set of samples to use", data.skymap.keys(), key='aprx_'+ev)
             with lock:
-                fig = data.skymap['PublicationSamples'].plot(contour=[50, 90])
+                fig = data.skymap[aprx_dict[ev]].plot(contour=[50, 90])
                 st.pyplot(fig[0])
         
