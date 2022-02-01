@@ -19,6 +19,9 @@ from gwosc import datasets
 from gwosc.api import fetch_event_json
 from peutils import *
 
+from pycbc.waveform import td_approximants, fd_approximants
+
+
 
 
 
@@ -106,18 +109,32 @@ def make_waveform(event):
 
     #st.write(pedata.config)
     # -- Get waveform name
-    aprx = pedata.approximant[0]
-    st.write('Waveform Family: ', aprx)
+    #aprx = pedata.approximant[0]
+    #st.write('Waveform Family: ', aprx)
     
     # -- Get dictionary of samples, indexed by run
     samples_dict = pedata.samples_dict
-    indx = list(samples_dict.keys())[0]
+    #indxlist = list(samples_dict.keys())
+    #indx = indxlist[0]
+
+    # -- For now, hard code approxmiate to IMRPhenomXPHM
+    aprx = 'IMRPhenomXPHM'
+
+    # -- Make radio button to select aprx
+    #aprx = st.radio("Select set of samples to use", pedata.approximant, key='aprx_waveform'+event)
+    indx_num = pedata.approximant.index(aprx)
+    indx = list(samples_dict.keys())[indx_num]
+    st.write('Waveform Family: ', aprx)
+    st.write('Using samples for {}'.format(indx))
 
     # -- Get a single run
     posterior_samples = samples_dict[indx]
 
     # -- Get reference frequency
-    fref = pedata.config[indx]['engine']['fref']
+    try:
+        fref = float(pedata.config[indx]['engine']['fref'])
+    except:
+        fref = float(pedata.config[indx]['config']["reference-frequency"])
     #st.write('fref', fref)
     
     # -- Get an array of log likelihoods
@@ -150,6 +167,10 @@ def make_waveform(event):
     # -- Try to construct waveform
     # -- Adoped from Dicong Liang
     # -- https://github.com/losc-tutorial/make-waveform/
+    #st.write(aprx)
+    #st.write(mass1)
+    #st.write(fref)
+    #st.write(td_approximants())
     hp, hc = get_td_waveform(approximant=aprx,
                              mass1=posterior_samples['mass_1'][maxl_index],
                              mass2=posterior_samples['mass_2'][maxl_index],
