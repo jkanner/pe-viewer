@@ -26,6 +26,10 @@ def get_params_intersect(sample_dict, chosenlist):
     for event in sample_dict.keys():
         thisparam = set(sample_dict[event].parameters)
         allparams = allparams.intersection(thisparam)
+
+    # -- Intersect with the list of good parameters from peutils
+    thisparam = set(ALL_PARAM)
+    allparams = allparams.intersection(thisparam)
     paramlist = list(allparams)
     paramlist.sort()
     return paramlist
@@ -50,10 +54,11 @@ def make_altair_plots(chosenlist):
     # -- Get parameters present in all selected events
     allparams = get_params_intersect(sample_dict, chosenlist)
     
+    col1, col2 = st.columns(2)
     # -- Loop over parameters
-    for param in allparams:
+    for count, param in enumerate(allparams):
 
-        st.markdown("#### {0}".format(param))
+        
         
         chartlist = []
         for i,event in enumerate(chosenlist):
@@ -85,8 +90,14 @@ def make_altair_plots(chosenlist):
         for chart in chartlist[1:]:
             allchart+=chart
 
-        st.altair_chart(allchart, use_container_width=True)
 
+        #st.altair_chart(allchart, use_container_width=True)
+        if (count % 2):
+            col2.markdown("#### {0}".format(param))
+            col2.altair_chart(allchart, use_container_width=True)
+        else:
+            col1.markdown("#### {0}".format(param))
+            col1.altair_chart(allchart, use_container_width=True)
 
     # unravel the histogram
     

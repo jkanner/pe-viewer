@@ -113,7 +113,7 @@ def load_samples(event, waveform=False, gwtc=True):
 
 
 
-params = ['a_1', 'a_2', 'chi_eff', 'chi_p', 'chirp_mass',
+ALL_PARAM = ['a_1', 'a_2', 'chi_eff', 'chi_p', 'chirp_mass',
           'chirp_mass_source', 'comoving_distance', 'cos_iota',
           'cos_theta_jn', 'cos_tilt_1', 'cos_tilt_2', 'dec',
           'final_mass', 'final_mass_non_evolved',
