@@ -114,3 +114,10 @@ This app displays data from LIGO, Virgo, and GEO downloaded from the Gravitation
 
 [See the code](https://github.com/jkanner/streamlit-pe-demo)
 """)
+
+with open('README.md', 'r') as filein:
+    readtxt = filein.read()
+with st.expander("Click to show README"):
+    st.markdown(readtxt)
+    
+

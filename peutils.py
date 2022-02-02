@@ -90,13 +90,14 @@ def load_samples(event, waveform=False, gwtc=True):
         
     url = 'https://labcit.ligo.caltech.edu/~jkanner/demo/pe/small-pe-gwtc2/{0}'.format(fn)
     if gwtc:
-        url = get_pe_url(event)
+        url = get_pe_url(event) # -- TESTING
 
     try: 
         r = requests.get(url)
         tfile = tempfile.NamedTemporaryFile(suffix='.h5')
         tfile.write(r.content)
         samples = read(tfile.name)
+        
     except:
         url = 'https://dcc.ligo.org/public/0157/P1800370/005/{0}_GWTC-1.hdf5'.format(event)
         r = requests.get(url)
