@@ -2,6 +2,8 @@
 
 A web app to make plots of posterior samples, skymaps, and waveforms for gravitational wave events.
 
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://share.streamlit.io/jkanner/pe-viewer/main/streamlit-app.py)
+
 ## Context
 
 This app plots results from the gravitational wave observatories LIGO, Virgo, and KAGRA.  You can learn
