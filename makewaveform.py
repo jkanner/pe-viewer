@@ -161,7 +161,7 @@ def make_waveform(event):
         f_low = 60
         fs = 4096
     else:
-        f_low = 15
+        f_low = 30
         fs = 4096
         
     # -- Try to construct waveform
@@ -186,6 +186,12 @@ def make_waveform(event):
                              delta_t=1.0/fs,
                              f_ref=fref,
                              f_lower=f_low)
+
+    # -- Crop waveform, if longer than 8 seconds
+    hp_length = len(hp) / fs
+    if hp_length > 8:
+        hp = hp.crop( hp_length-8, 0 )
+        hc = hc.crop( hp_length-8, 0 )
 
     # -- Plot waveform w/ altair
     plot_signal(hp)
