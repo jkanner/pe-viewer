@@ -118,23 +118,32 @@ def make_waveform(event):
     #indx = indxlist[0]
 
     # -- For now, hard code approxmiate to IMRPhenomXPHM
-    aprx = 'IMRPhenomXPHM'
+    #aprx = 'IMRPhenomXPHM'
+    good_aprx = ['IMRPhenomXPHM', 'C01:IMRPhenomPv2']
 
     # -- Make radio button to select aprx
-    #aprx = st.radio("Select set of samples to use", pedata.approximant, key='aprx_waveform'+event)
-    indx_num = pedata.approximant.index(aprx)
-    indx = list(samples_dict.keys())[indx_num]
-    st.write('Waveform Family: ', aprx)
-    st.write('Using samples for {}'.format(indx))
+    keylist = list(samples_dict.keys())
+    samples_key = st.radio("Select set of samples to use", keylist, key='aprx_waveform'+event)
+    indx = keylist.index(samples_key)
+    #indx_num = pedata.approximant.index(aprx)
+    #indx = list(samples_dict.keys())[indx_num]
+    #st.write('Waveform Family: ', aprx)
+    #st.write('Using samples for {}'.format(indx))
 
     # -- Get a single run
-    posterior_samples = samples_dict[indx]
+    posterior_samples = samples_dict[samples_key]
+    st.write('Samples', samples_key)
+
+    # -- Try to find corresponding aprx
+    aprx = pedata.approximant[indx]
+    st.write('Aprx', aprx)
 
     # -- Get reference frequency
     try:
-        fref = float(pedata.config[indx]['engine']['fref'])
+        fref = float(pedata.config[samples_key]['engine']['fref'])
     except:
-        fref = float(pedata.config[indx]['config']["reference-frequency"])
+        st.write(pedata.config.keys())
+        fref = float(pedata.config[samples_key]['config']["reference-frequency"])
     #st.write('fref', fref)
     
     # -- Get an array of log likelihoods

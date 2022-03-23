@@ -57,6 +57,7 @@ def load_samples_old(event):
 
 
 # -- Assemble samples into sample dictionary
+@st.cache
 def load_multiple_events(chosenlist):
     sample_dict = {}
     data_load_state = st.text('Loading data...')
@@ -64,15 +65,22 @@ def load_multiple_events(chosenlist):
         data_load_state.text('Loading event ... {0}'.format(i))
         if chosen is None: continue
         samples = load_samples(chosen)
-        try:
-            #-- GWTC-2
-            # sample_dict[chosen] = samples.samples_dict['PublicationSamples']
+        default_keys = ['PublicationSamples', '']
+        available_keys = list(samples.samples_dict.keys())
+        # st.write(available_keys)  --> Debugging line to see all aproximates
 
-            # -- GWTC-3
-            sample_dict[chosen] = samples.samples_dict['C01:IMRPhenomXPHM']
-        except:
-            #-- GWTC-1
-            sample_dict[chosen] = samples.samples_dict
+        for keyguess in default_keys:
+            if keyguess in available_keys:    
+                usekey = keyguess
+                break
+        else:
+            usekey = available_keys[0]
+
+        sample_dict[chosen] = samples.samples_dict[usekey]
+        #st.write('For {1}, using samples: {0}'.format(usekey, chosen)) # <-- debugging
+
+        #-- GWTC-1
+        #   sample_dict[chosen] = samples.samples_dict
             
     data_load_state.text('Loading event ... done'.format(i))
     published_dict = pesummary.utils.samples_dict.MultiAnalysisSamplesDict( sample_dict )
