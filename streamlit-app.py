@@ -32,6 +32,8 @@ page = st.radio('Select Section:', [1,2,3,4], format_func=headerlabel)
 st.markdown("## {}".format(headerlabel(page)))
 
 # -- Query GWOSC for GWTC events
+#eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident'],
+#                          optional=False)
 eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2'],
                           optional=False)
 
