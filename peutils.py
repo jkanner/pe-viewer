@@ -65,11 +65,8 @@ def load_multiple_events(chosenlist):
         if chosen is None: continue
         samples = load_samples(chosen)
         try:
-            #-- GWTC-2
-            # sample_dict[chosen] = samples.samples_dict['PublicationSamples']
-
-            # -- GWTC-3
-            sample_dict[chosen] = samples.samples_dict['C01:IMRPhenomXPHM']
+            #-- This key should be the preferred samples for GWTC-2.1 and GWTC-3
+            sample_dict[chosen] = samples.samples_dict['C01:Mixed']
         except:
             #-- GWTC-1
             sample_dict[chosen] = samples.samples_dict
