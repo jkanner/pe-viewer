@@ -65,11 +65,8 @@ def load_multiple_events(chosenlist):
         if chosen is None: continue
         samples = load_samples(chosen)
         try:
-            #-- GWTC-2
-            # sample_dict[chosen] = samples.samples_dict['PublicationSamples']
-
-            # -- GWTC-3
-            sample_dict[chosen] = samples.samples_dict['C01:IMRPhenomXPHM']
+            #-- This key should be the preferred samples for GWTC-2.1 and GWTC-3
+            sample_dict[chosen] = samples.samples_dict['C01:Mixed']
         except:
             #-- GWTC-1
             sample_dict[chosen] = samples.samples_dict
@@ -159,7 +156,15 @@ def get_pe_url(event):
             evurl = info['jsonurl']
             eventinfo = requests.get(evurl).json()
 
-            # -- Find PE data URL
+            # -- Find PE data URL for GWTC-1 events
+            meta = eventinfo['events'][event_id]
+            if meta['catalog.shortName'] == 'GWTC-1-confident':
+                for peset, peinfo in meta['parameters'].items():
+                    if 'R2_pe_combined' in peset:
+                        return peinfo['data_url']  
+
+
+            # -- Find PE data URL for all other events
             for peset, peinfo in eventinfo['events'][event_id]['parameters'].items():
                 if peinfo['is_preferred'] and (peinfo['pipeline_type'] == 'pe'):
                     return peinfo['data_url']

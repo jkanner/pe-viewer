@@ -32,7 +32,7 @@ page = st.radio('Select Section:', [1,2,3,4], format_func=headerlabel)
 st.markdown("## {}".format(headerlabel(page)))
 
 # -- Query GWOSC for GWTC events
-eventlist = get_eventlist(catalog=['GWTC-3-confident'],
+eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
                           optional=False)
 
 # -- 2nd and 3rd events are optional, so include "None" option
@@ -97,11 +97,12 @@ if page == 1:
 if page == 4:
 
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
-    if int(ev1[2:4]) < 18:  # -- Kludge to find events before 2018
-        st.markdown("Found GWTC-1 Event")
-        plot_gwtc1_waveform(ev1)
-    else:
-        make_waveform(ev1)
+    make_waveform(ev1)
+    #if int(ev1[2:4]) < 18:  # -- Kludge to find events before 2018
+    #    st.markdown("Found GWTC-1 Event")
+    #    plot_gwtc1_waveform(ev1)
+    #else:
+    #    make_waveform(ev1)
 
 if page == 3:
     make_skymap(chosenlist)

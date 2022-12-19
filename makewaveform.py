@@ -120,13 +120,13 @@ def make_waveform(event):
     # -- For now, hard code approxmiate to IMRPhenomXPHM
     aprx = 'IMRPhenomXPHM'
 
-    # -- Make radio button to select aprx
+    # -- Select corresponding samples
     #aprx = st.radio("Select set of samples to use", pedata.approximant, key='aprx_waveform'+event)
     indx_num = pedata.approximant.index(aprx)
     indx = list(samples_dict.keys())[indx_num]
-    st.write('Waveform Family: ', aprx)
-    st.write('Using samples for {}'.format(indx))
-
+    st.text('Waveform Family: {0}'.format(aprx))
+    st.text('Using samples for {0}'.format(indx))
+    
     # -- Get a single run
     posterior_samples = samples_dict[indx]
 
