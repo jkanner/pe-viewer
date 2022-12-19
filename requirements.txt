@@ -2,7 +2,7 @@ numpy
 streamlit
 gwpy
 pycbc
-pesummary==0.13.10
+pesummary>=0.13
 seaborn==0.12.1
 healpy
 ligo.skymap
