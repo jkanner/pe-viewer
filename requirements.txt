@@ -5,4 +5,4 @@ pycbc
 pesummary>=0.13.0
 seaborn==0.11.2
 healpy
-ligo.skymap==1.0.3
+ligo.skymap
