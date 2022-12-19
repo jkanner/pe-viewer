@@ -1,8 +1,8 @@
-numpy
+numpy==1.22.4
 streamlit
 gwpy
 pycbc
-pesummary
-seaborn
+pesummary==0.13.9
+seaborn==0.11.2
 healpy
-ligo.skymap
+ligo.skymap==1.0.3
