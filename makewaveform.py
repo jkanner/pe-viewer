@@ -103,7 +103,7 @@ def plot_white_signal(signal, color_num=0, display=True):
 def make_waveform(event):
 
     # -- Band-pass controls
-    freqrange = st.sidebar.slider('Band-pass frequency range (Hz)', min_value=10, max_value=2000, value=(30,400))
+    freqrange = st.sidebar.slider('Band-pass frequency range (Hz)', min_value=10, max_value=2000, value=(30,400), key=event)
     
     pedata = load_samples(event, waveform=True)
 
