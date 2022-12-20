@@ -4,7 +4,7 @@ on:
   push:
     branches: [ dockerize ]
   pull_request:
-    branches: [ dockerze ]
+    branches: [ dockerize ]
 
 jobs:
 
@@ -14,5 +14,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Login to GitHub Container Registry
+      uses: docker/login-action@v1
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build the Docker image
-      run: docker build . --file docker/Dockerfile --tag pe-viewer:$(date +%s)
+      run: |
+             docker build . --file docker/Dockerfile --tag gcr.io/philippeg-ligo/pe-viewer:$(date +%s)
+             docker push gcr.io/philippeg-ligo/pe-viewer:$(date +%s)
