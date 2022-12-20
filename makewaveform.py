@@ -22,9 +22,6 @@ from peutils import *
 from pycbc.waveform import td_approximants, fd_approximants
 
 
-
-
-
 # -- Try download for waveform data
 def get_download_link(signal, filename='waveform.csv'):
     """
@@ -105,7 +102,7 @@ def make_waveform(event):
     # -- Band-pass controls
     freqrange = st.sidebar.slider('Band-pass frequency range (Hz)', min_value=10, max_value=2000, value=(30,400), key=event)
     
-    pedata = load_samples(event, waveform=True)
+    pedata = load_samples(event)
 
     #st.write(pedata.config)
     # -- Get waveform name

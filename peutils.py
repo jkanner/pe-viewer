@@ -48,7 +48,7 @@ def get_eventlist(catalog=None, optional=False):
         eventlist.insert(0,None)    
     return eventlist
 
-# -- Load PE samples
+# -- OLD Load PE samples
 @st.cache
 def load_samples_old(event):
     fn = 'small-pe-gwtc2/{0}_small.h5'.format(event)
@@ -77,17 +77,12 @@ def load_multiple_events(chosenlist):
 
 
 # -- Load PE samples from web
-@st.cache
-def load_samples(event, waveform=False, gwtc=True):
+@st.cache(max_entries=100)
+def load_samples(event, gwtc=True):
 
-    if waveform:
-        fn = '{0}_waveform.h5'.format(event)
-    else:
-        fn = '{0}_small.h5'.format(event)
-        
-    url = 'https://labcit.ligo.caltech.edu/~jkanner/demo/pe/small-pe-gwtc2/{0}'.format(fn)
+    # url = 'https://labcit.ligo.caltech.edu/~jkanner/demo/pe/small-pe-gwtc2/{0}'.format(fn)
     if gwtc:
-        url = get_pe_url(event) # -- TESTING
+        url = get_pe_url(event)
 
     try: 
         r = requests.get(url)
@@ -105,10 +100,11 @@ def load_samples(event, waveform=False, gwtc=True):
         else:
             samples = read(tfile.name)
 
-
+    try: 
+        samples.downsample(2000)
+    except:
+        pass
     return samples
-
-
 
 
 ALL_PARAM = ['a_1', 'a_2', 'chi_eff', 'chi_p', 'chirp_mass',
@@ -131,7 +127,7 @@ ALL_PARAM = ['a_1', 'a_2', 'chi_eff', 'chi_p', 'chirp_mass',
 
 
 # -- Load strain data
-@st.cache   #-- Magic command to cache data
+@st.cache(max_entries=6)   #-- Magic command to cache data
 def load_strain(t0, detector):
     straindata = TimeSeries.fetch_open_data(detector, t0-14, t0+14, cache=False)
     return straindata
@@ -144,8 +140,8 @@ def get_params_intersect(sample_dict, chosenlist):
     return allparams
  
 
-# -- Get the GWTC catalog
-#@st.cache
+# -- Find URL of the PE set
+@st.cache(max_entries=200)
 def get_pe_url(event):
     url = 'https://www.gw-openscience.org/eventapi/json/GWTC/'
     gwtc = requests.get(url).json()
