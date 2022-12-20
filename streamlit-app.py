@@ -97,12 +97,11 @@ if page == 1:
 if page == 4:
 
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
-    make_waveform(ev1)
-    #if int(ev1[2:4]) < 18:  # -- Kludge to find events before 2018
-    #    st.markdown("Found GWTC-1 Event")
-    #    plot_gwtc1_waveform(ev1)
-    #else:
-    #    make_waveform(ev1)
+    if 'GW170817' in ev1:  
+        st.markdown("Making approximate waveform for GW170817 ...")
+        plot_gwtc1_waveform(ev1)
+    else:
+        make_waveform(ev1)
 
 if page == 3:
     make_skymap(chosenlist)
