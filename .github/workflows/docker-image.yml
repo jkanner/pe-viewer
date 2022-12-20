@@ -22,5 +22,6 @@ jobs:
         password: ${{ secrets.GITHUB_TOKEN }}
     - name: Build the Docker image
       run: |
-             docker build . --file docker/Dockerfile --tag gcr.io/philippeg-ligo/pe-viewer:$(date +%s)
-             docker push gcr.io/philippeg-ligo/pe-viewer:$(date +%s)
+             TS=$(date +%s)
+             docker build . --file docker/Dockerfile --tag gcr.io/${{ github.actor }}/pe-viewer:${TS}
+             docker push gcr.io/${{ github.actor }}/pe-viewer:${TS}
