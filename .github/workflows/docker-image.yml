@@ -23,5 +23,6 @@ jobs:
     - name: Build the Docker image
       run: |
              TS=$(date +%s)
-             docker build . --file docker/Dockerfile --tag gcr.io/${{ github.actor }}/pe-viewer:${TS}
-             docker push gcr.io/${{ github.actor }}/pe-viewer:${TS}
+             echo ${{ github.actor }}
+             docker build . --file docker/Dockerfile --tag gcr.io/philippeg-ligo/pe-viewer:${TS}
+             docker push gcr.io/philippeg-ligo/pe-viewer:${TS}
