@@ -220,7 +220,7 @@ def make_waveform(event):
     cropend   = t0 + dt
 
     st.markdown("## Project waveform onto each detector")
-    st.markdown("Detector data in gray, projected waveform in orange")
+    st.markdown("Whitened and band-passed detector data in gray, with projected waveform in orange.")
     for ifo in detectorlist:
 
         st.markdown("### {0}".format(ifo))
