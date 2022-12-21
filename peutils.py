@@ -16,6 +16,7 @@ import base64
 
 import pesummary
 from pesummary.io import read
+import pesummary.utils.samples_dict
 
 
 # Use the non-interactive Agg backend, which is recommended as a
