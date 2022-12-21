@@ -57,11 +57,12 @@ def load_samples_old(event):
 
 
 # -- Assemble samples into sample dictionary
+@st.cache(max_entries=3)
 def load_multiple_events(chosenlist):
     sample_dict = {}
-    data_load_state = st.text('Loading data...')
+    #data_load_state = st.text('Loading data...')
     for i,chosen in enumerate(chosenlist, 1):
-        data_load_state.text('Loading event ... {0}'.format(i))
+        #data_load_state.text('Loading event ... {0}'.format(i))
         if chosen is None: continue
         samples = load_samples(chosen)
         try:
@@ -71,7 +72,7 @@ def load_multiple_events(chosenlist):
             #-- GWTC-1
             sample_dict[chosen] = samples.samples_dict
             
-    data_load_state.text('Loading event ... done'.format(i))
+    #data_load_state.text('Loading event ... done'.format(i))
     published_dict = pesummary.utils.samples_dict.MultiAnalysisSamplesDict( sample_dict )
     return published_dict
 

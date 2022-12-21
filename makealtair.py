@@ -34,7 +34,7 @@ def get_params_intersect(sample_dict, chosenlist):
     paramlist.sort()
     return paramlist
         
-def make_altair_plots(chosenlist):
+def make_altair_plots(chosenlist, sample_dict):
 
     st.markdown("""
     This page will show 1-D posterior plots for any parameters available for all selected events.
@@ -46,7 +46,7 @@ def make_altair_plots(chosenlist):
         if ev is None: continue
         st.markdown(ev)
 
-    sample_dict = load_multiple_events(chosenlist)
+    #sample_dict = load_multiple_events(chosenlist)
  
     # -- Color list
     colorlist = ['blue', 'red', 'green']
