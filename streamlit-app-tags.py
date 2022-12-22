@@ -33,8 +33,11 @@ ev3 = st.sidebar.selectbox('Event 3', eventlist2)
 x = [ev1, ev2, ev3]
 chosenlist = list(filter(lambda a: a != None, x))
 
-# -- Load PE samples for all events into a pesummary object
-published_dict = load_multiple_events(chosenlist)
+# -- Load all PE samples into datadict 
+datadict = make_datadict(chosenlist)
+
+# -- Load the published PE samples into a pesummary object
+published_dict = format_data(chosenlist, datadict)
 
 twodim, onedim,  skymap, waveform, about = st.tabs([
     '2-D posterior plot',
@@ -84,7 +87,7 @@ with twodim:
     st.markdown("### Triangle plot")
     ch_param = [param1, param2]
     with lock:
-        with st.spinner(text="This triangle plot takes 2 minutes to make.  We apologize for the wait ..."):
+        with st.spinner(text="Making triangle plot ..."):
             fig = published_dict.plot(ch_param, type='reverse_triangle',
                                     grid=False)
         st.pyplot(fig[0])
@@ -101,7 +104,7 @@ with onedim:
     make_altair_plots(chosenlist, published_dict)
 
 with skymap:
-    make_skymap(chosenlist)
+    make_skymap(chosenlist, datadict)
 
 with waveform:
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
@@ -109,7 +112,7 @@ with waveform:
         st.markdown("Making approximate waveform for GW170817 ...")
         plot_gwtc1_waveform(ev1)
     else:
-        make_waveform(ev1)
+        make_waveform(ev1, datadict)
 
 
 
