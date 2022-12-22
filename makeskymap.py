@@ -9,7 +9,7 @@ from matplotlib.backends.backend_agg import RendererAgg
 lock = RendererAgg.lock
 
 
-def make_skymap(chosenlist):
+def make_skymap(chosenlist, datadict):
     aprx_dict = {}
     for ev in chosenlist:
         st.markdown("### Skymap for {0}".format(ev))   
@@ -27,7 +27,7 @@ def make_skymap(chosenlist):
 
         # -- All other events       
         else:         
-            data = load_samples(ev)
+            data = datadict[ev]
             aprx_dict[ev] = st.radio("Select set of samples to use", data.skymap.keys(), key='aprx_'+ev)
             with lock:
                 fig = data.skymap[aprx_dict[ev]].plot(contour=[50, 90])

@@ -49,40 +49,35 @@ def get_eventlist(catalog=None, optional=False):
         eventlist.insert(0,None)    
     return eventlist
 
-# -- OLD Load PE samples
-@st.cache
-def load_samples_old(event):
-    fn = 'small-pe-gwtc2/{0}_small.h5'.format(event)
-    samples = read(fn)
-    return samples
-
-
 # -- Assemble samples into sample dictionary
-@st.cache(max_entries=3)
-def load_multiple_events(chosenlist):
+@st.cache(max_entries=5, suppress_st_warning=True)
+def format_data(chosenlist, datadict):
     sample_dict = {}
-    #data_load_state = st.text('Loading data...')
     for i,chosen in enumerate(chosenlist, 1):
-        #data_load_state.text('Loading event ... {0}'.format(i))
         if chosen is None: continue
-        samples = load_samples(chosen)
+        samples = datadict[chosen]
         try:
             #-- This key should be the preferred samples for GWTC-2.1 and GWTC-3
             sample_dict[chosen] = samples.samples_dict['C01:Mixed']
         except:
             #-- GWTC-1
             sample_dict[chosen] = samples.samples_dict
-            
-    #data_load_state.text('Loading event ... done'.format(i))
     published_dict = pesummary.utils.samples_dict.MultiAnalysisSamplesDict( sample_dict )
     return published_dict
 
 
-# -- Load PE samples from web
-@st.cache(max_entries=100)
-def load_samples(event, gwtc=True):
+# -- Create dictionary of samples
+@st.cache(max_entries=5, suppress_st_warning=True)
+def make_datadict(chosenlist):
+    datadict = {}
+    for ev in chosenlist:
+        with st.spinner(text="Downloading data for {0} ...".format(ev)):
+            datadict[ev] = load_samples(ev)
+    return datadict
 
-    # url = 'https://labcit.ligo.caltech.edu/~jkanner/demo/pe/small-pe-gwtc2/{0}'.format(fn)
+# -- Load PE samples from web
+@st.cache(max_entries=100, show_spinner=False)
+def load_samples(event, gwtc=True):
     if gwtc:
         url = get_pe_url(event)
 
