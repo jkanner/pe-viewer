@@ -38,14 +38,20 @@ def get_event_list():
 def update_pe():
     chosenlist = get_event_list()
     # -- Load all PE samples into datadict 
-    st.session_state['datadict'] = make_datadict(chosenlist)    
+    with st.spinner(text="Downloading black hole data ..."):
+        st.session_state['datadict'] = make_datadict(chosenlist)    
     # -- Load the published PE samples into a pesummary object
-    st.session_state['published_dict'] = format_data(chosenlist, st.session_state['datadict'])  
+    with st.spinner(text="Formatting data ..."):
+        st.session_state['published_dict'] = format_data(chosenlist, st.session_state['datadict'])  
 
-st.sidebar.markdown("### Select events")
-ev1 = st.sidebar.selectbox('Event 1', eventlist, on_change=update_pe, key='ev1')
-ev2 = st.sidebar.selectbox('Event 2', eventlist2, on_change=update_pe, key='ev2')    
-ev3 = st.sidebar.selectbox('Event 3', eventlist2, on_change=update_pe, key='ev3')
+with st.sidebar:
+    with st.form("event_selection"):
+        st.markdown("### Select events")
+        ev1 = st.selectbox('Event 1', eventlist,  key='ev1')
+        ev2 = st.selectbox('Event 2', eventlist2,  key='ev2')    
+        ev3 = st.selectbox('Event 3', eventlist2,  key='ev3')
+        submitted = st.form_submit_button("Update data", on_click=update_pe)
+
 chosenlist = get_event_list()
 
 # -- Initialize session state when app is first loaded
@@ -53,10 +59,10 @@ if 'datadict' not in st.session_state:
     update_pe()
 
     
-twodim, onedim,  skymap, waveform, about = st.tabs([
-    '2-D posterior plot',
-    '1-D posterior plots',
+twodim, skymap, onedim, waveform, about = st.tabs([
+    '2-D Posterior Plot',
     'Skymaps',
+    'All Parameters',
     'Waveform',
     'About'
 ])
@@ -118,11 +124,13 @@ with twodim:
             # fig = published_dict.plot(param, type='hist', kde=True, module='gw') #-- pesummary v 0.11.0
             st.pyplot(fig)
 
-with onedim:    
-    make_altair_plots(chosenlist, published_dict)
 
 with skymap:
     make_skymap(chosenlist, datadict)
+
+with onedim:    
+    make_altair_plots(chosenlist, published_dict)
+
 
 with waveform:
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
