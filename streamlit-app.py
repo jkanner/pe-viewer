@@ -24,21 +24,35 @@ eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GW
 
 # -- 2nd and 3rd events are optional, so include "None" option
 eventlist2 = deepcopy(eventlist)
-eventlist2.insert(0,None)    
+eventlist2.insert(0,None)  
+
+# -- Helper method to get list of events
+def get_event_list():
+    x = [st.session_state['ev1'], 
+        st.session_state['ev2'],
+        st.session_state['ev3']]
+    chosenlist = list(filter(lambda a: a != None, x))
+    return chosenlist
+
+#-- Define method for updating PE, to be called when chosen event changes
+def update_pe():
+    chosenlist = get_event_list()
+    # -- Load all PE samples into datadict 
+    st.session_state['datadict'] = make_datadict(chosenlist)    
+    # -- Load the published PE samples into a pesummary object
+    st.session_state['published_dict'] = format_data(chosenlist, st.session_state['datadict'])  
 
 st.sidebar.markdown("### Select events")
-ev1 = st.sidebar.selectbox('Event 1', eventlist)
-ev2 = st.sidebar.selectbox('Event 2', eventlist2)    
-ev3 = st.sidebar.selectbox('Event 3', eventlist2)
-x = [ev1, ev2, ev3]
-chosenlist = list(filter(lambda a: a != None, x))
+ev1 = st.sidebar.selectbox('Event 1', eventlist, on_change=update_pe, key='ev1')
+ev2 = st.sidebar.selectbox('Event 2', eventlist2, on_change=update_pe, key='ev2')    
+ev3 = st.sidebar.selectbox('Event 3', eventlist2, on_change=update_pe, key='ev3')
+chosenlist = get_event_list()
 
-# -- Load all PE samples into datadict 
-datadict = make_datadict(chosenlist)
+# -- Initialize session state when app is first loaded
+if 'datadict' not in st.session_state:
+    update_pe()
 
-# -- Load the published PE samples into a pesummary object
-published_dict = format_data(chosenlist, datadict)
-
+    
 twodim, onedim,  skymap, waveform, about = st.tabs([
     '2-D posterior plot',
     '1-D posterior plots',
@@ -46,6 +60,10 @@ twodim, onedim,  skymap, waveform, about = st.tabs([
     'Waveform',
     'About'
 ])
+
+# -- Short-cut variable names
+datadict = st.session_state['datadict']
+published_dict = st.session_state['published_dict']
 
 with about:
     st.markdown("## About this app")
