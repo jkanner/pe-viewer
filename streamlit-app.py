@@ -18,19 +18,6 @@ st.title('PE Viewer')
 
 st.markdown("""Display plots of posterior samples from gravitational wave events.""")
 
-sectionnames = [
-    '1-D posterior plots',
-    '2-D posterior plot',
-    'Skymaps',
-    'Waveform',
-]
-
-def headerlabel(number):
-    return "{0}".format(sectionnames[number-1])
-
-page = st.radio('Select Section:', [1,2,3,4], format_func=headerlabel)
-st.markdown("## {}".format(headerlabel(page)))
-
 # -- Query GWOSC for GWTC events
 eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
                           optional=False)
@@ -46,7 +33,32 @@ ev3 = st.sidebar.selectbox('Event 3', eventlist2)
 x = [ev1, ev2, ev3]
 chosenlist = list(filter(lambda a: a != None, x))
 
-if page == 2:
+# -- Load all PE samples into datadict 
+datadict = make_datadict(chosenlist)
+
+# -- Load the published PE samples into a pesummary object
+published_dict = format_data(chosenlist, datadict)
+
+twodim, onedim,  skymap, waveform, about = st.tabs([
+    '2-D posterior plot',
+    '1-D posterior plots',
+    'Skymaps',
+    'Waveform',
+    'About'
+])
+
+with about:
+    st.markdown("## About this app")
+    st.markdown("""
+    This app displays data from LIGO, Virgo, and KAGRA downloaded from the Gravitational Wave Open Science Center at https://gwosc.org .
+
+    #### Source code: [jkanner/streamlit-pe-demo](https://github.com/jkanner/streamlit-pe-demo)
+    """)
+    with open('README.md', 'r') as filein:
+        readtxt = filein.read()    
+    st.markdown(readtxt)
+
+with twodim:
     st.markdown("""
         * These 2-D plots can reveal correlations between parameters.  
         * Select the events you'd like to see in the left sidebar, and the parameters to plot below.
@@ -56,9 +68,6 @@ if page == 2:
     for ev in chosenlist:
         if ev is None: continue
         st.markdown(ev)
-
-    # -- Load PE samples for all events into a pesummary object
-    published_dict = load_multiple_events(chosenlist)
 
     # -- Select parameters to plot
     st.markdown("## Select parameters to plot")
@@ -78,7 +87,7 @@ if page == 2:
     st.markdown("### Triangle plot")
     ch_param = [param1, param2]
     with lock:
-        with st.spinner(text="This triangle plot takes 2 minutes to make.  We apologize for the wait ..."):
+        with st.spinner(text="Making triangle plot ..."):
             fig = published_dict.plot(ch_param, type='reverse_triangle',
                                     grid=False)
         st.pyplot(fig[0])
@@ -91,33 +100,22 @@ if page == 2:
             # fig = published_dict.plot(param, type='hist', kde=True, module='gw') #-- pesummary v 0.11.0
             st.pyplot(fig)
 
-if page == 1:    
-    make_altair_plots(chosenlist)
+with onedim:    
+    make_altair_plots(chosenlist, published_dict)
 
-if page == 4:
+with skymap:
+    make_skymap(chosenlist, datadict)
 
+with waveform:
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
     if 'GW170817' in ev1:  
         st.markdown("Making approximate waveform for GW170817 ...")
         plot_gwtc1_waveform(ev1)
     else:
-        make_waveform(ev1)
+        make_waveform(ev1, datadict)
 
-if page == 3:
-    make_skymap(chosenlist)
 
-st.markdown("## About this app")
 
-st.markdown("""
 
-This app displays data from LIGO, Virgo, and GEO downloaded from the Gravitational Wave Open Science Center at https://gw-openscience.org .
-
-[See the code](https://github.com/jkanner/streamlit-pe-demo)
-""")
-
-with open('README.md', 'r') as filein:
-    readtxt = filein.read()
-with st.expander("Click to show README"):
-    st.markdown(readtxt)
     
 
