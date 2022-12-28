@@ -24,28 +24,52 @@ eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GW
 
 # -- 2nd and 3rd events are optional, so include "None" option
 eventlist2 = deepcopy(eventlist)
-eventlist2.insert(0,None)    
+eventlist2.insert(0,None)  
 
-st.sidebar.markdown("### Select events")
-ev1 = st.sidebar.selectbox('Event 1', eventlist)
-ev2 = st.sidebar.selectbox('Event 2', eventlist2)    
-ev3 = st.sidebar.selectbox('Event 3', eventlist2)
-x = [ev1, ev2, ev3]
-chosenlist = list(filter(lambda a: a != None, x))
+# -- Helper method to get list of events
+def get_event_list():
+    x = [st.session_state['ev1'], 
+        st.session_state['ev2'],
+        st.session_state['ev3']]
+    chosenlist = list(filter(lambda a: a != None, x))
+    return chosenlist
 
-# -- Load all PE samples into datadict 
-datadict = make_datadict(chosenlist)
+#-- Define method for updating PE, to be called when chosen event changes
+def update_pe():
+    chosenlist = get_event_list()
+    # -- Load all PE samples into datadict 
+    with st.spinner(text="Downloading black hole data ..."):
+        st.session_state['datadict'] = make_datadict(chosenlist)    
+    # -- Load the published PE samples into a pesummary object
+    with st.spinner(text="Formatting data ..."):
+        st.session_state['published_dict'] = format_data(chosenlist, st.session_state['datadict'])  
 
-# -- Load the published PE samples into a pesummary object
-published_dict = format_data(chosenlist, datadict)
+with st.sidebar:
+    with st.form("event_selection"):
+        st.markdown("### Select events")
+        ev1 = st.selectbox('Event 1', eventlist,  key='ev1')
+        ev2 = st.selectbox('Event 2', eventlist2,  key='ev2')    
+        ev3 = st.selectbox('Event 3', eventlist2,  key='ev3')
+        submitted = st.form_submit_button("Update data", on_click=update_pe)
 
-twodim, onedim,  skymap, waveform, about = st.tabs([
-    '2-D posterior plot',
-    '1-D posterior plots',
+chosenlist = get_event_list()
+
+# -- Initialize session state when app is first loaded
+if 'datadict' not in st.session_state:
+    update_pe()
+
+    
+twodim, skymap, onedim, waveform, about = st.tabs([
+    '2-D Posterior Plot',
     'Skymaps',
+    'All Parameters',
     'Waveform',
     'About'
 ])
+
+# -- Short-cut variable names
+datadict = st.session_state['datadict']
+published_dict = st.session_state['published_dict']
 
 with about:
     st.markdown("## About this app")
@@ -100,11 +124,13 @@ with twodim:
             # fig = published_dict.plot(param, type='hist', kde=True, module='gw') #-- pesummary v 0.11.0
             st.pyplot(fig)
 
-with onedim:    
-    make_altair_plots(chosenlist, published_dict)
 
 with skymap:
     make_skymap(chosenlist, datadict)
+
+with onedim:    
+    make_altair_plots(chosenlist, published_dict)
+
 
 with waveform:
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))

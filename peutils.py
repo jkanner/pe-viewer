@@ -50,7 +50,7 @@ def get_eventlist(catalog=None, optional=False):
     return eventlist
 
 # -- Assemble samples into sample dictionary
-@st.cache(max_entries=5, suppress_st_warning=True)
+#@st.cache(max_entries=5, suppress_st_warning=True)
 def format_data(chosenlist, datadict):
     sample_dict = {}
     for i,chosen in enumerate(chosenlist, 1):
@@ -67,7 +67,7 @@ def format_data(chosenlist, datadict):
 
 
 # -- Create dictionary of samples
-@st.cache(max_entries=5, suppress_st_warning=True)
+#@st.cache(max_entries=5, suppress_st_warning=True)
 def make_datadict(chosenlist):
     datadict = {}
     for ev in chosenlist:
