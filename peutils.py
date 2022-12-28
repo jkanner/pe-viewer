@@ -138,7 +138,8 @@ def get_params_intersect(sample_dict, chosenlist):
  
 
 # -- Find URL of the PE set
-@st.cache(max_entries=200)
+## WARNING - cache off for debugging
+#@st.cache(max_entries=200)
 def get_pe_url(event):
     url = 'https://www.gw-openscience.org/eventapi/json/GWTC/'
     gwtc = requests.get(url).json()
@@ -159,7 +160,9 @@ def get_pe_url(event):
 
             # -- Find PE data URL for all other events
             for peset, peinfo in eventinfo['events'][event_id]['parameters'].items():
+                st.write('Checking {0}'.format(peset))
                 if peinfo['is_preferred'] and (peinfo['pipeline_type'] == 'pe'):
+                    st.write(peinfo['data_url'])
                     return peinfo['data_url']
 
 
