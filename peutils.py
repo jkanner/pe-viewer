@@ -63,9 +63,10 @@ def format_data(chosenlist, datadict):
     for i,chosen in enumerate(chosenlist, 1):
         if chosen is None: continue
         samples = datadict[chosen]
+        url, waveform = get_pe_url(chosen)
         try:
             #-- This key should be the preferred samples for GWTC-2.1 and GWTC-3
-            sample_dict[chosen] = samples.samples_dict['C01:Mixed']
+            sample_dict[chosen] = samples.samples_dict[waveform]
         except:
             #-- GWTC-1
             sample_dict[chosen] = samples.samples_dict
@@ -86,7 +87,7 @@ def make_datadict(chosenlist):
 @st.cache(max_entries=100, show_spinner=False)
 def load_samples(event, gwtc=True):
     if gwtc:
-        url = get_pe_url(event)
+        url, waveform = get_pe_url(event)
 
     try: 
         r = requests.get(url)
@@ -161,13 +162,13 @@ def get_pe_url(event):
             if meta['catalog.shortName'] == 'GWTC-1-confident':
                 for peset, peinfo in meta['parameters'].items():
                     if 'R2_pe_combined' in peset:
-                        return peinfo['data_url']  
+                        return peinfo['data_url'], peinfo['waveform_family']
 
 
             # -- Find PE data URL for all other events
             for peset, peinfo in eventinfo['events'][event_id]['parameters'].items():
                 if peinfo['is_preferred'] and (peinfo['pipeline_type'] == 'pe'):
-                    return peinfo['data_url']
+                    return peinfo['data_url'], peinfo['waveform_family']
 
 
 if __name__ == '__main__':
