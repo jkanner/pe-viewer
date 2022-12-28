@@ -33,17 +33,24 @@ lock = RendererAgg.lock
 @st.cache
 def get_eventlist(catalog=None, optional=False):
 
-    allevents = set()
+    eventlist = []
+
+    # -- Get GWTC list
+    url = 'https://www.gw-openscience.org/eventapi/json/GWTC/'
+    gwtc = requests.get(url).json()
+
+    for event_id, info in gwtc['events'].items():
+        if info['catalog.shortName'] in catalog:
+            eventlist.append(info['commonName'])
     
-    for cat in catalog:
+    #for cat in catalog:
         # -- Get list of events
         # find_datasets(catalog='GWTC-1-confident',type='events')
-        eventlist = datasets.find_datasets(type='events', catalog=cat)
-        eventlist = [name.split('-')[0] for name in eventlist if name[0:2] == 'GW']
-        eventset = set([name for name in eventlist])
-        allevents = allevents.union(eventset)
+        #eventlist = datasets.find_datasets(type='events', catalog=cat)
+        #eventlist = [name.split('-')[0] for name in eventlist if name[0:2] == 'GW']
+        #eventset = set([name for name in eventlist])
+        #allevents = allevents.union(eventset)
         
-    eventlist = list(allevents)
     eventlist.sort()
     if optional:
         eventlist.insert(0,None)    
@@ -138,8 +145,7 @@ def get_params_intersect(sample_dict, chosenlist):
  
 
 # -- Find URL of the PE set
-## WARNING - cache off for debugging
-#@st.cache(max_entries=200)
+@st.cache(max_entries=200)
 def get_pe_url(event):
     url = 'https://www.gw-openscience.org/eventapi/json/GWTC/'
     gwtc = requests.get(url).json()
@@ -160,9 +166,7 @@ def get_pe_url(event):
 
             # -- Find PE data URL for all other events
             for peset, peinfo in eventinfo['events'][event_id]['parameters'].items():
-                st.write('Checking {0}'.format(peset))
                 if peinfo['is_preferred'] and (peinfo['pipeline_type'] == 'pe'):
-                    st.write(peinfo['data_url'])
                     return peinfo['data_url']
 
 
