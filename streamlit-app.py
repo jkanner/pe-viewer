@@ -19,7 +19,7 @@ st.title('PE Viewer')
 st.markdown("""Make plots of waveforms, source parameters, and skymaps for gravitational-wave events.
 """)
 
-st.image('img/blackhole.jpg')
+st.image('img/black-hole-ellipse.png')
 
 # -- Query GWOSC for GWTC events
 eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
