@@ -16,7 +16,7 @@ This web app creates plots to display information about these mergers, such as t
 
 This app makes use of data and software obtained from the Gravitational Wave Open Science 
 Center, a service of LIGO Laboratory, the LIGO Scientific Collaboration, 
-the Virgo Collaboration, and KAGRA.
+the Virgo Collaboration, and KAGRA.  Black hole image adopted from art by Aurore Simonnet at Sonoma State.
 
 Learn more at [gwosc.org](https://gwosc.org).
 
