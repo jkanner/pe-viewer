@@ -16,7 +16,10 @@ lock = RendererAgg.lock
 st.set_page_config(layout="wide")
 st.title('PE Viewer')
 
-st.markdown("""Display plots of posterior samples from gravitational wave events.""")
+st.markdown("""Make plots of waveforms, source parameters, and skymaps for gravitational-wave events.
+""")
+
+st.image('img/black-hole-ellipse.png')
 
 # -- Query GWOSC for GWTC events
 eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
@@ -38,7 +41,7 @@ def get_event_list():
 def update_pe():
     chosenlist = get_event_list()
     # -- Load all PE samples into datadict 
-    with st.spinner(text="Downloading black hole data ..."):
+    with st.spinner(text="Data download in progress.  Please be patient ..."):
         st.session_state['datadict'] = make_datadict(chosenlist)    
     # -- Load the published PE samples into a pesummary object
     with st.spinner(text="Formatting data ..."):
@@ -60,7 +63,7 @@ if 'datadict' not in st.session_state:
 
     
 twodim, skymap, onedim, waveform, about = st.tabs([
-    '2-D Posterior Plot',
+    '2-D Plots',
     'Skymaps',
     'All Parameters',
     'Waveform',
@@ -72,12 +75,8 @@ datadict = st.session_state['datadict']
 published_dict = st.session_state['published_dict']
 
 with about:
-    st.markdown("## About this app")
-    st.markdown("""
-    This app displays data from LIGO, Virgo, and KAGRA downloaded from the Gravitational Wave Open Science Center at https://gwosc.org .
-
-    #### Source code: [jkanner/streamlit-pe-demo](https://github.com/jkanner/streamlit-pe-demo)
-    """)
+    with st.expander("Watch video introduction"):
+        st.video('https://youtu.be/eQIPqcknEig')
     with open('README.md', 'r') as filein:
         readtxt = filein.read()    
     st.markdown(readtxt)
@@ -86,7 +85,6 @@ with twodim:
     st.markdown("""
         * These 2-D plots can reveal correlations between parameters.  
         * Select the events you'd like to see in the left sidebar, and the parameters to plot below.
-        * The plots may take about 2 minutes to produce.
         """)
     st.markdown("### Making plots for events:")
     for ev in chosenlist:
