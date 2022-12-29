@@ -61,7 +61,7 @@ if 'datadict' not in st.session_state:
 
     
 twodim, skymap, onedim, waveform, about = st.tabs([
-    '2-D Posterior Plot',
+    '2-D Plot',
     'Skymaps',
     'All Parameters',
     'Waveform',
@@ -73,7 +73,6 @@ datadict = st.session_state['datadict']
 published_dict = st.session_state['published_dict']
 
 with about:
-    st.markdown("## About this app")
     with open('README.md', 'r') as filein:
         readtxt = filein.read()    
     st.markdown(readtxt)
@@ -82,7 +81,6 @@ with twodim:
     st.markdown("""
         * These 2-D plots can reveal correlations between parameters.  
         * Select the events you'd like to see in the left sidebar, and the parameters to plot below.
-        * The plots may take about 2 minutes to produce.
         """)
     st.markdown("### Making plots for events:")
     for ev in chosenlist:
