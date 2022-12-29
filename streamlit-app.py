@@ -2,7 +2,7 @@ import streamlit as st
 import pesummary
 from pesummary.io import read
 from peutils import *
-from makewaveform import make_waveform, plot_gwtc1_waveform
+from makewaveform import make_waveform, simple_plot_waveform
 from makealtair import make_altair_plots, get_params_intersect
 from makeskymap import make_skymap
 from copy import deepcopy
@@ -134,11 +134,13 @@ with onedim:
 
 with waveform:
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
-    if 'GW170817' in ev1:  
-        st.markdown("Making approximate waveform for GW170817 ...")
-        plot_gwtc1_waveform(ev1)
-    else:
+
+    try:
         make_waveform(ev1, datadict)
+    except:
+        st.write("Unable to generate maximum likelihood waveform.  Making approximate waveform instead.")
+        simple_plot_waveform(ev1)
+    
 
 
 
