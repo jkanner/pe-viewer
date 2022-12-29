@@ -334,7 +334,7 @@ def simple_plot_waveform(name):
         name = ev.split('-')[0]
     #params = fetch_event_json(ev)['events'][ev]
     eventinfo = fetch_event_json(name)['events']
-    event_id = eventinfo.keys()[0]
+    event_id = list(eventinfo.keys())[0]
     params   = eventinfo[event_id]
     
     # -- Generate waveform for each event based on 1-D parameters
