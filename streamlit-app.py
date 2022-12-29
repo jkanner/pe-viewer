@@ -16,7 +16,8 @@ lock = RendererAgg.lock
 st.set_page_config(layout="wide")
 st.title('PE Viewer')
 
-st.markdown("""Display plots of posterior samples from gravitational wave events.""")
+st.markdown("""Make plots of waveforms, source parameters, and skymaps for gravitational-wave events.
+""")
 
 # -- Query GWOSC for GWTC events
 eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
@@ -73,11 +74,6 @@ published_dict = st.session_state['published_dict']
 
 with about:
     st.markdown("## About this app")
-    st.markdown("""
-    This app displays data from LIGO, Virgo, and KAGRA downloaded from the Gravitational Wave Open Science Center at https://gwosc.org .
-
-    #### Source code: [jkanner/streamlit-pe-demo](https://github.com/jkanner/streamlit-pe-demo)
-    """)
     with open('README.md', 'r') as filein:
         readtxt = filein.read()    
     st.markdown(readtxt)

@@ -42,14 +42,6 @@ def get_eventlist(catalog=None, optional=False):
     for event_id, info in gwtc['events'].items():
         if info['catalog.shortName'] in catalog:
             eventlist.append(info['commonName'])
-    
-    #for cat in catalog:
-        # -- Get list of events
-        # find_datasets(catalog='GWTC-1-confident',type='events')
-        #eventlist = datasets.find_datasets(type='events', catalog=cat)
-        #eventlist = [name.split('-')[0] for name in eventlist if name[0:2] == 'GW']
-        #eventset = set([name for name in eventlist])
-        #allevents = allevents.union(eventset)
         
     eventlist.sort()
     if optional:
