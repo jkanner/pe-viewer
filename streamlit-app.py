@@ -75,6 +75,8 @@ datadict = st.session_state['datadict']
 published_dict = st.session_state['published_dict']
 
 with about:
+    with st.expander("Watch video introduction"):
+        st.video('https://youtu.be/eQIPqcknEig')
     with open('README.md', 'r') as filein:
         readtxt = filein.read()    
     st.markdown(readtxt)
