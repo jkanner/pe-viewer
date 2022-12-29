@@ -270,59 +270,6 @@ def make_waveform(event, datadict):
         st.altair_chart(chart1+chart2, use_container_width=True)
         
 
-def plot_gwtc1_waveform(name):
-
-    # -- Get median values from GWOSC web site
-    eventlist = datasets.find_datasets(type='events', catalog='GWTC-1-confident')
-    for ev in eventlist:
-        if name not in ev: continue
-
-        name = ev.split('-')[0]
-        params = fetch_event_json(ev)['events'][ev]
-    
-        # -- Generate waveform for each event based on 1-D parameters
-        st.markdown("Generating waveform based on marginalized 1-D parameters ...")
-        m1 = params['mass_1_source']
-        m2 = params['mass_2_source']
-        spin = params['chi_eff']
-        distance = params['luminosity_distance']
-        gps = datasets.event_gps(ev)
-        snr = float(params['network_matched_filter_snr'])
-
-        st.write("Mass 1", m1, "$M_{\odot}$")
-        st.write("Mass 2", m2, "$M_{\odot}$")
-        st.write("Effective Spin", spin)
-
-    
-        # -- Set different parameters based on BNS or BBH
-        fs = 4096
-        if (m2>5): 
-            apx = 'SEOBNRv2'
-            bphigh = 600
-            start_file = -2
-            flow=20
-        else: 
-            apx = 'SpinTaylorT4'
-            flow = 70
-            bphigh = 1100
-            start_file = -7
-        
-        hp, hc = get_td_waveform(approximant=apx,
-                                 mass1=m1,
-                                 mass2=m2,
-                                 spin1z=spin,
-                                 delta_t=1.0/fs,
-                                 distance = distance,
-                                 f_lower=flow)
-        
-
-        plot_signal(hp)
-        hp_gwpy = gwpy.timeseries.TimeSeries(hp.data, times=hp.sample_times)
-        st.audio(make_audio_file(hp_gwpy))
-
-        url = get_download_link(hp, filename="{0}_waveform.csv".format(name))
-        st.markdown(url, unsafe_allow_html=True)
-
 
 def simple_plot_waveform(name):
 
