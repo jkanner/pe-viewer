@@ -134,11 +134,13 @@ with onedim:
 
 with waveform:
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
-    if 'GW170817' in ev1:  
-        st.markdown("Making approximate waveform for GW170817 ...")
-        plot_gwtc1_waveform(ev1)
-    else:
+
+    try:
         make_waveform(ev1, datadict)
+    else:
+        st.write("Failed to generate max likelihood waveform.  Making approximate waveform instead.")
+        simple_plot_waveform(ev1)
+    
 
 
 
