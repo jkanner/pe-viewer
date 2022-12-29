@@ -137,7 +137,7 @@ with waveform:
 
     try:
         make_waveform(ev1, datadict)
-    else:
+    except:
         st.write("Failed to generate max likelihood waveform.  Making approximate waveform instead.")
         simple_plot_waveform(ev1)
     
