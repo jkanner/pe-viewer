@@ -27,7 +27,7 @@ Each "event" is a compact object merger observed in gravitational waves.  The ev
 
 From the sidebar at left, you can select one or more events.  After selecting an event, the app will find publicly available parameter estimation posterior samples and download them from zenodo.  All of the displayed plots will be derived from these samples.
 
-## 2-D Plot
+## 2-D Plots
 
 This feature shows a "triangle" plot that can reveal 
 correlations between parameters.  Parameter probability distributions 

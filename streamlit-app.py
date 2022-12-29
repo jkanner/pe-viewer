@@ -63,7 +63,7 @@ if 'datadict' not in st.session_state:
 
     
 twodim, skymap, onedim, waveform, about = st.tabs([
-    '2-D Plot',
+    '2-D Plots',
     'Skymaps',
     'All Parameters',
     'Waveform',
