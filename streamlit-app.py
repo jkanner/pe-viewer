@@ -41,7 +41,7 @@ def get_event_list():
 def update_pe():
     chosenlist = get_event_list()
     # -- Load all PE samples into datadict 
-    with st.spinner(text="Data download in progress.  Please be patient ..."):
+    with st.spinner(text="Loading data ..."):
         st.session_state['datadict'] = make_datadict(chosenlist)    
     # -- Load the published PE samples into a pesummary object
     with st.spinner(text="Formatting data ..."):
