@@ -4,7 +4,7 @@ Make plots of waveforms, source parameters, and skymaps for gravitational-wave e
 
 Run app: [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://pe-viewer.streamlit.app)
 
-Source code: [jkanner/streamlit-pe-demo](https://github.com/jkanner/streamlit-pe-demo)
+Source code: [jkanner/pe-viewer](https://github.com/jkanner/pe-viewer)
 
 ## Introduction
 
