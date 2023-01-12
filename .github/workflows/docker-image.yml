@@ -5,6 +5,7 @@ on:
     branches: [ dockerize ]
   pull_request:
     branches: [ dockerize ]
+  workflow_dispatch:
 
 jobs:
 
