@@ -2,9 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ dockerize ]
+    branches: [ 'dockerize', 'main'  ]
   pull_request:
-    branches: [ dockerize ]
+    branches: [ 'main', 'dockerize' ]
   workflow_dispatch:
 
 jobs:
