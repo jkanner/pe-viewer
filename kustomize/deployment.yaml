@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: igwn-pe-viewer
+spec:
+  minReadySeconds: 10
+  revisionHistoryLimit: 5
+  progressDeadlineSeconds: 60
+  strategy:
+    rollingUpdate:
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      app: igwn-pe-viewer
+  template:
+    metadata:
+      labels:
+        app: igwn-pe-viewer
+    spec:
+      containers:
+      - name: igwn-pe-viewer
+        image: ghcr.io/philippeg-ligo/pe-viewer:230106
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 8501
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 2000m
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            memory: 64Mi
