@@ -41,7 +41,7 @@ def get_event_list():
 def update_pe():
     chosenlist = get_event_list()
     # -- Load all PE samples into datadict 
-    with st.spinner(text="Data download in progress.  Please be patient ..."):
+    with st.spinner(text="Loading data ..."):
         st.session_state['datadict'] = make_datadict(chosenlist)    
     # -- Load the published PE samples into a pesummary object
     with st.spinner(text="Formatting data ..."):
@@ -76,7 +76,7 @@ published_dict = st.session_state['published_dict']
 
 with about:
     with st.expander("Watch video introduction"):
-        st.video('https://youtu.be/eQIPqcknEig')
+        st.video('https://youtu.be/74SxD0T92Oo')
     with open('README.md', 'r') as filein:
         readtxt = filein.read()    
     st.markdown(readtxt)
