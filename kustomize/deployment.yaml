@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: igwn-pe-viewer
+  name: igwn-peviewer
 spec:
   minReadySeconds: 10
   revisionHistoryLimit: 5
@@ -12,24 +12,24 @@ spec:
     type: RollingUpdate
   selector:
     matchLabels:
-      app: igwn-pe-viewer
+      app: igwn-peviewer
   template:
     metadata:
       labels:
-        app: igwn-pe-viewer
+        app: igwn-peviewer
     spec:
       containers:
-      - name: igwn-pe-viewer
-        image: ghcr.io/philippeg-ligo/pe-viewer:230106
+      - name: igwn-peviewer
+        image: ghcr.io/jkanner/pe-viewer:230118
         imagePullPolicy: IfNotPresent
         ports:
-        - name: http
+        - name: streamlit
           containerPort: 8501
           protocol: TCP
         resources:
           limits:
             cpu: 2000m
-            memory: 512Mi
+            memory: 6G
           requests:
             cpu: 100m
-            memory: 64Mi
+            memory: 1G
