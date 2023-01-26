@@ -2,7 +2,7 @@
 
 Make plots of waveforms, source parameters, and skymaps for gravitational-wave events.
 
-Run app: [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://pe-viewer.streamlit.app)
+Run app: [![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](http://peviewer.igwn.org)
 
 Source code: [jkanner/pe-viewer](https://github.com/jkanner/pe-viewer)
 
