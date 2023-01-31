@@ -99,8 +99,7 @@ def plot_white_signal(signal, color_num=0, display=True):
 
 def make_waveform(event, datadict):
 
-    # -- Band-pass controls
-    freqrange = st.sidebar.slider('Band-pass frequency range (Hz)', min_value=10, max_value=2000, value=(30,400), key=event)
+    
     
     pedata = datadict[event]
 
@@ -138,7 +137,7 @@ def make_waveform(event, datadict):
     loglike = posterior_samples['log_likelihood']
     
     # -- Find the index of max log likelihood
-    st.write("Finding maxium likelihood sample ...")
+    st.write("Finding maximum likelihood sample ...")
     maxl_index = loglike.argmax()
 
     # -- Example parameter
@@ -221,6 +220,9 @@ def make_waveform(event, datadict):
 
     st.markdown("## Project waveform onto each detector")
     st.markdown("Whitened and band-passed detector data in gray, with projected waveform in orange.")
+    # -- Band-pass controls
+    freqrange = st.slider('Band-pass frequency range (Hz)', min_value=10, max_value=2000, value=(30,400), key=event)
+    
     for ifo in detectorlist:
 
         st.markdown("### {0}".format(ifo))

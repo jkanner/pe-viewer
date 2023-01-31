@@ -62,12 +62,12 @@ if 'datadict' not in st.session_state:
     update_pe()
 
     
-twodim, skymap, onedim, waveform, about = st.tabs([
+about, twodim, skymap, onedim, waveform  = st.tabs([
+    'About',
     '2-D Plots',
     'Skymaps',
     'All Parameters',
     'Waveform',
-    'About'
 ])
 
 # -- Short-cut variable names
