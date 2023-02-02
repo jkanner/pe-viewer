@@ -47,6 +47,7 @@ def update_pe():
     with st.spinner(text="Formatting data ..."):
         st.session_state['published_dict'] = format_data(chosenlist, st.session_state['datadict'])  
 
+# -- Create form to set event data selection
 with st.sidebar:
     with st.form("event_selection"):
         st.markdown("### Select events")
@@ -57,29 +58,33 @@ with st.sidebar:
 
 chosenlist = get_event_list()
 
-# -- Initialize session state when app is first loaded
-if 'datadict' not in st.session_state:
-    update_pe()
-
-    
-twodim, skymap, onedim, waveform, about = st.tabs([
+# --
+# Display page tab structure
+# --
+about, twodim, skymap, onedim, waveform  = st.tabs([
+    'About',
     '2-D Plots',
     'Skymaps',
     'All Parameters',
     'Waveform',
-    'About'
 ])
 
-# -- Short-cut variable names
-datadict = st.session_state['datadict']
-published_dict = st.session_state['published_dict']
-
+# -- Display ABOUT information before the data is loaded
 with about:
     with st.expander("Watch video introduction"):
         st.video('https://youtu.be/74SxD0T92Oo')
     with open('README.md', 'r') as filein:
         readtxt = filein.read()    
     st.markdown(readtxt)
+
+
+# -- Initialize session state (e.g. download GW150914 data)
+if 'datadict' not in st.session_state:
+    update_pe()
+
+# -- Short-cut variable names
+datadict = st.session_state['datadict']
+published_dict = st.session_state['published_dict']
 
 with twodim:
     st.markdown("""

@@ -8,15 +8,9 @@ Source code: [jkanner/pe-viewer](https://github.com/jkanner/pe-viewer)
 
 ## Introduction
 
-The gravitational-wave observatories LIGO, Virgo, and KAGRA are now recording signals from compact object mergers, including mergers of binary black holes and binary neutron stars.
+The gravitational-wave observatories LIGO, Virgo, and KAGRA observe signals from transient astrophysical events, including mergers of binary black holes and binary neutron stars.
 
 This web app creates plots to display information about these mergers, such as the source mass and location.
-
-## Context
-
-This app makes use of data and software obtained from the Gravitational Wave Open Science 
-Center, a service of LIGO Laboratory, the LIGO Scientific Collaboration, 
-the Virgo Collaboration, and KAGRA.  Black hole image adopted from art by Aurore Simonnet at Sonoma State.
 
 Learn more at [gwosc.org](https://gwosc.org).
 
@@ -65,6 +59,14 @@ detector data, so that you can compare how the data
 looks against the theoretical waveform.
 
 The waveform app will only work with the first selected event - events are ignored for this feature.
+
+## Acknowledgment
+
+This app makes use of data and software obtained from the Gravitational Wave Open Science 
+Center, a service of LIGO Laboratory, the LIGO Scientific Collaboration, 
+the Virgo Collaboration, and KAGRA.  Black hole image adopted from art by Aurore Simonnet at Sonoma State.
+
+
 
 
 
