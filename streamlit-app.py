@@ -25,6 +25,12 @@ st.image('img/black-hole-ellipse.png')
 eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
                           optional=False)
 
+# -- Check for completed cache
+if not os.path.exists('./cachedone.txt'):
+    stockcache(eventlist)
+    with open('./cachedone.txt','w') as outfile:
+        outfile.write('Cache complete')
+
 # -- 2nd and 3rd events are optional, so include "None" option
 eventlist2 = deepcopy(eventlist)
 eventlist2.insert(0,None)  
