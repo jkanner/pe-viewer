@@ -104,6 +104,16 @@ def load_samples(event, gwtc=True):
     return samples
 
 
+def stockcache(eventlist):
+    total = len(eventlist)
+    st.write("## Intializing  cache.  This may take several hours")
+    cachebar = st.progress(0.01)
+    for count, ev in enumerate(eventlist):
+        cachebar.progress(count/total)
+        with st.spinner(text="Downloading data for {0} ({1} / {2})".format(ev, count, total)):
+            load_samples(ev)
+
+
 ALL_PARAM = ['a_1', 'a_2', 'chi_eff', 'chi_p', 'chirp_mass',
           'chirp_mass_source', 'comoving_distance', 'cos_iota',
           'cos_theta_jn', 'cos_tilt_1', 'cos_tilt_2', 'dec',

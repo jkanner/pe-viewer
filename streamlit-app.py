@@ -6,6 +6,7 @@ from makewaveform import make_waveform, simple_plot_waveform
 from makealtair import make_altair_plots, get_params_intersect
 from makeskymap import make_skymap
 from copy import deepcopy
+import glob, os
 
 import matplotlib
 matplotlib.use('Agg')
@@ -24,6 +25,8 @@ st.image('img/black-hole-ellipse.png')
 # -- Query GWOSC for GWTC events
 eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
                           optional=False)
+
+
 
 # -- 2nd and 3rd events are optional, so include "None" option
 eventlist2 = deepcopy(eventlist)
@@ -61,12 +64,13 @@ chosenlist = get_event_list()
 # --
 # Display page tab structure
 # --
-about, twodim, skymap, onedim, waveform  = st.tabs([
+about, twodim, skymap, onedim, waveform, config  = st.tabs([
     'About',
     '2-D Plots',
     'Skymaps',
     'All Parameters',
     'Waveform',
+    'Config'
 ])
 
 # -- Display ABOUT information before the data is loaded
@@ -145,7 +149,24 @@ with waveform:
         simple_plot_waveform(ev1)
     
 
+with config:
 
+    # -- Check cache status
+    homedir = os.path.expanduser('~')
+    cachelist = glob.glob(homedir + '/.streamlit/cache/*.pickle')
+    cachesize = len(cachelist)
+    cachepercent = int(cachesize / len(eventlist) * 100)
+    st.metric('Cache Size:', '{0}%'.format(cachepercent))
+
+    with st.expander('Manage Cache'):
+        st.write("""This app uses a local cache to store data downloaded from zenodo.  The cache is designed to 
+            build up over time as the app is used, or the cache may be built on-demand.  This process could take
+            up to several hours, but may improve app performance after it is complete.""")
+
+        if cachepercent < 99:
+            st.button('Build Cache', on_click=stockcache, args=[eventlist], type='primary')
+        else:
+            st.write("Cache is complete!")
 
 
     
