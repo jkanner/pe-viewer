@@ -1,5 +1,5 @@
 numpy==1.23.5
-streamlit
+streamlit==1.17.0
 gwpy
 pycbc
 pesummary>=0.13.0
