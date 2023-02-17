@@ -76,7 +76,7 @@ def make_datadict(chosenlist):
     return datadict
 
 # -- Load PE samples from web
-@st.cache(ttl=180, show_spinner=False, persist=True)
+@st.cache(max_entries=1, show_spinner=False, persist=True)
 def load_samples(event, gwtc=True):
     if gwtc:
         url, waveform = get_pe_url(event)
