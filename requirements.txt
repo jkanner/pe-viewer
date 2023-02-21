@@ -2,7 +2,8 @@ numpy==1.23.5
 streamlit==1.17.0
 gwpy
 pycbc
-pesummary>=0.13.0
+pesummary==0.13.9
 seaborn==0.12.1
 healpy
 ligo.skymap
+matplotlib-base==3.5.3
