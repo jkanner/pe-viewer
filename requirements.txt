@@ -6,4 +6,4 @@ pesummary==0.13.9
 seaborn==0.12.1
 healpy
 ligo.skymap
-matplotlib-base==3.5.3
+matplotlib==3.5.3
