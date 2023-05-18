@@ -36,7 +36,7 @@ def get_eventlist(catalog=None, optional=False):
     eventlist = []
 
     # -- Get GWTC list
-    url = 'https://www.gw-openscience.org/eventapi/json/GWTC/'
+    url = 'https://www.gwosc.org/eventapi/json/GWTC/'
     gwtc = requests.get(url).json()
 
     for event_id, info in gwtc['events'].items():
