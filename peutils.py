@@ -150,7 +150,7 @@ def get_params_intersect(sample_dict, chosenlist):
 # -- Find URL of the PE set
 @st.cache(max_entries=200)
 def get_pe_url(event):
-    url = 'https://www.gw-openscience.org/eventapi/json/GWTC/'
+    url = 'https://www.gwosc.org/eventapi/json/GWTC/'
     gwtc = requests.get(url).json()
     
     for event_id, info in gwtc['events'].items():
