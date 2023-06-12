@@ -1,6 +1,5 @@
 import streamlit as st
 
-###
 
 from gwpy.timeseries import TimeSeries
 
