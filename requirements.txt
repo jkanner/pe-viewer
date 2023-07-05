@@ -8,3 +8,4 @@ seaborn==0.12.1
 healpy
 ligo.skymap
 matplotlib==3.5.3
+altair==4.2.2
