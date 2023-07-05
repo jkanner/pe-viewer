@@ -20,7 +20,7 @@ spec:
     spec:
       containers:
       - name: igwn-peviewer
-        image: ghcr.io/jkanner/pe-viewer:230612
+        image: ghcr.io/jkanner/pe-viewer:1688589727
         imagePullPolicy: IfNotPresent
         ports:
         - name: streamlit
