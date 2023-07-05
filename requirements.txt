@@ -9,3 +9,4 @@ healpy
 ligo.skymap
 matplotlib==3.5.3
 altair==4.2.2
+pandas==1.5.2
