@@ -96,14 +96,14 @@ def make_altair_plots(chosenlist, sample_dict):
         # -- Def
         refurl = 'https://lscsoft.docs.ligo.org/pesummary/stable_docs/gw/parameters.html#:~:text={0}'.format(param)
 
-        label = samples.all_latex_labels[param]
+        unitlabel = samples.all_latex_labels[param]
         
         #st.altair_chart(allchart, use_container_width=True)
         if (count % 2):
-            col2.markdown("#### {2} - [{0}]({1})".format(param, refurl, label))
+            col2.markdown("#### {2} - [{0}]({1})".format(param, refurl, unitlabel))
             col2.altair_chart(allchart, use_container_width=True)
         else:
-            col1.markdown("#### {2} - [{0}]({1})".format(param, refurl, label))
+            col1.markdown("#### {2} - [{0}]({1})".format(param, refurl, unitlabel))
             col1.altair_chart(allchart, use_container_width=True)
 
     # unravel the histogram
