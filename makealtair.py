@@ -57,16 +57,19 @@ def make_altair_plots(chosenlist, sample_dict):
     col1, col2 = st.columns(2)
     # -- Loop over parameters
     for count, param in enumerate(allparams):
-
-        
-        
+                
         chartlist = []
         for i,event in enumerate(chosenlist):
 
             if event is None: continue
-            
+
             samples = sample_dict[event]
 
+            # -- Explore parameters
+            # st.markdown(samples.all_latex_labels[param])
+            #st.text(samples.parameters[0])
+            #st.text(dir(samples[param]))
+            
             # -- Make histogram
             value, bins = np.histogram(samples[param], bins=50, density=True)
 
@@ -75,7 +78,7 @@ def make_altair_plots(chosenlist, sample_dict):
                 'density': value,
                 'Event': len(value)*[event]
             })
-    
+
             chart = alt.Chart(source).mark_area(
                 opacity=0.5,
                 interpolate='step',
@@ -92,13 +95,15 @@ def make_altair_plots(chosenlist, sample_dict):
 
         # -- Def
         refurl = 'https://lscsoft.docs.ligo.org/pesummary/stable_docs/gw/parameters.html#:~:text={0}'.format(param)
+
+        label = samples.all_latex_labels[param]
         
         #st.altair_chart(allchart, use_container_width=True)
         if (count % 2):
-            col2.markdown("#### [{0}]({1})".format(param, refurl))
+            col2.markdown("#### {2} - [{0}]({1})".format(param, refurl, label))
             col2.altair_chart(allchart, use_container_width=True)
         else:
-            col1.markdown("#### [{0}]({1})".format(param, refurl))
+            col1.markdown("#### {2} - [{0}]({1})".format(param, refurl, label))
             col1.altair_chart(allchart, use_container_width=True)
 
     # unravel the histogram
