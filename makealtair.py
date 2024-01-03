@@ -38,7 +38,7 @@ def make_altair_plots(chosenlist, sample_dict):
 
     st.markdown("""
     This page will show 1-D posterior plots for any parameters available for all selected events.
-    See the pesummary docs for [definitions of standard parameters](https://lscsoft.docs.ligo.org/pesummary/unstable_docs/gw/parameters.html)
+    See the pesummary docs for [definitions of standard parameters](https://lscsoft.docs.ligo.org/pesummary/stable_docs/gw/parameters.html)
     """)
     
     st.markdown("### Showing parameters for events:")
@@ -90,13 +90,15 @@ def make_altair_plots(chosenlist, sample_dict):
         for chart in chartlist[1:]:
             allchart+=chart
 
-
+        # -- Def
+        refurl = 'https://lscsoft.docs.ligo.org/pesummary/stable_docs/gw/parameters.html#:~:text={0}'.format(param)
+        
         #st.altair_chart(allchart, use_container_width=True)
         if (count % 2):
-            col2.markdown("#### {0}".format(param))
+            col2.markdown("#### [{0}]({1})".format(param, refurl))
             col2.altair_chart(allchart, use_container_width=True)
         else:
-            col1.markdown("#### {0}".format(param))
+            col1.markdown("#### [{0}]({1})".format(param, refurl))
             col1.altair_chart(allchart, use_container_width=True)
 
     # unravel the histogram
