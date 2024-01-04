@@ -141,6 +141,7 @@ with onedim:
 
 with waveform:
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
+    st.markdown("This app only creates waveforms for one event (Event 1) to reduce run time.")
 
     try:
         make_waveform(ev1, datadict)
