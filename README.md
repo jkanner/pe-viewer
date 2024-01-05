@@ -1,4 +1,4 @@
-# PE Viewer
+# GW Event Viewer
 
 Make plots of waveforms, source parameters, and skymaps for gravitational-wave events.
 

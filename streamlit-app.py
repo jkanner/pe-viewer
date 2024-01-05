@@ -15,7 +15,7 @@ from matplotlib.backends.backend_agg import RendererAgg
 lock = RendererAgg.lock
 
 st.set_page_config(layout="wide")
-st.title('PE Viewer')
+st.title('GW Event Viewer')
 
 st.markdown("""Make plots of waveforms, source parameters, and skymaps for gravitational-wave events.
 """)
