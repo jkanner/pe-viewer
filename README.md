@@ -1,4 +1,4 @@
-# PE Viewer
+# GW Event Viewer
 
 Make plots of waveforms, source parameters, and skymaps for gravitational-wave events.
 
@@ -20,6 +20,15 @@ Each "event" is a compact object merger observed in gravitational waves.  The ev
 [Gravitational Wave Transient Catalog](https://gwosc.org/GWTC).
 
 From the sidebar at left, you can select one or more events.  After selecting an event, the app will find publicly available parameter estimation posterior samples and download them from zenodo.  All of the displayed plots will be derived from these samples.
+
+## Sample Selection
+
+This app uses the posterior samples which are labeled as the `Default PE`
+in the online [Gravitational Wave Transient Catalog](https://gwosc.org/GWTC).
+In many cases, the 1-D and 2-D posterior plots are made using
+mixed samples, which are a combination of samples from mulitple
+PE runs.  
+
 
 ## 2-D Plots
 

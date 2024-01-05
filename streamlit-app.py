@@ -15,7 +15,7 @@ from matplotlib.backends.backend_agg import RendererAgg
 lock = RendererAgg.lock
 
 st.set_page_config(layout="wide")
-st.title('PE Viewer')
+st.title('GW Event Viewer')
 
 st.markdown("""Make plots of waveforms, source parameters, and skymaps for gravitational-wave events.
 """)
@@ -98,7 +98,12 @@ with twodim:
     st.markdown("### Making plots for events:")
     for ev in chosenlist:
         if ev is None: continue
-        st.markdown(ev)
+        peurl, namekey = get_pe_url(ev)
+        weburl = 'https://gwosc.org/eventapi/html/GWTC/#:~:text={0}'.format(ev)
+        st.markdown('#### {0}'.format(ev))
+        st.markdown('[ ⬇️ Samples]({0}) | [ 🔗 Catalog]({1})'.format(peurl, weburl))
+        st.text('Samples name ' + namekey)
+
 
     # -- Select parameters to plot
     st.markdown("## Select parameters to plot")

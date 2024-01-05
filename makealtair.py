@@ -41,11 +41,15 @@ def make_altair_plots(chosenlist, sample_dict):
     See the pesummary docs for [definitions of standard parameters](https://lscsoft.docs.ligo.org/pesummary/stable_docs/gw/parameters.html)
     """)
     
-    st.markdown("### Showing parameters for events:")
     for ev in chosenlist:
         if ev is None: continue
-        st.markdown(ev)
-
+        peurl, namekey = get_pe_url(ev)
+        weburl = 'https://gwosc.org/eventapi/html/GWTC/#:~:text={0}'.format(ev)
+        
+        st.markdown('#### {0}'.format(ev))
+        st.markdown(' ⬇️ [Samples]({0}) | 🔗 [Catalog]({1})'.format(peurl, weburl))
+        st.text('Samples name ' + namekey)
+        
     #sample_dict = load_multiple_events(chosenlist)
  
     # -- Color list
