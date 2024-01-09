@@ -33,12 +33,14 @@ eventlist2 = deepcopy(eventlist)
 eventlist2.insert(0,None)  
 
 # -- Check for any get params
-getparam = st.experimental_get_query_params()
-startindex = 0
-if 'event1' in getparam:
-    event1 = getparam['event1'][0]
-    if event1 in eventlist:
-        startindex = eventlist.index(event1)
+startindex1, startindex2, startindex3 = get_getparams(eventlist,eventlist2)
+
+#getparam = st.experimental_get_query_params()
+#startindex = 0
+#if 'event1' in getparam:
+#    event1 = getparam['event1'][0]
+#    if event1 in eventlist:
+#        startindex = eventlist.index(event1)
 
 
 # -- Helper method to get list of events
@@ -63,9 +65,9 @@ def update_pe():
 with st.sidebar:
     with st.form("event_selection"):
         st.markdown("### Select events")
-        ev1 = st.selectbox('Event 1', eventlist,  key='ev1', index=startindex)
-        ev2 = st.selectbox('Event 2', eventlist2,  key='ev2')    
-        ev3 = st.selectbox('Event 3', eventlist2,  key='ev3')
+        ev1 = st.selectbox('Event 1', eventlist,  key='ev1', index=startindex1)
+        ev2 = st.selectbox('Event 2', eventlist2,  key='ev2', index=startindex2)    
+        ev3 = st.selectbox('Event 3', eventlist2,  key='ev3', index=startindex3)
         submitted = st.form_submit_button("Update data", on_click=update_pe)
 
 chosenlist = get_event_list()

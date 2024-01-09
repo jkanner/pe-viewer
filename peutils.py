@@ -173,6 +173,34 @@ def get_pe_url(event):
                     return peinfo['data_url'], peinfo['waveform_family']
 
 
+# -- Check for get parameters
+def get_getparams(eventlist, eventlist2):
+    getparam = st.experimental_get_query_params()
+
+    startindex1 = 0
+    if 'event1' in getparam:
+        event1 = getparam['event1'][0]
+        if event1 in eventlist:
+            startindex1 = eventlist.index(event1)
+            
+    startindex2 = 0
+    if 'event2' in getparam:
+        event2 = getparam['event2'][0]
+        if event2 in eventlist2:
+            startindex2 = eventlist2.index(event2)
+
+    startindex3 = 0
+    if 'event3' in getparam:
+        event3 = getparam['event3'][0]
+        if event3 in eventlist2:
+            startindex3 = eventlist2.index(event3)
+
+    return startindex1, startindex2, startindex3
+
+
+
+
+
 if __name__ == '__main__':
     get_pe_url('cow')
     #print(get_pe_url('GW150914'))
