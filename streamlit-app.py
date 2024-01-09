@@ -32,6 +32,15 @@ eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GW
 eventlist2 = deepcopy(eventlist)
 eventlist2.insert(0,None)  
 
+# -- Check for any get params
+getparam = st.experimental_get_query_params()
+startindex = 0
+if 'event1' in getparam:
+    event1 = getparam['event1'][0]
+    if event1 in eventlist:
+        startindex = eventlist.index(event1)
+
+
 # -- Helper method to get list of events
 def get_event_list():
     x = [st.session_state['ev1'], 
@@ -54,7 +63,7 @@ def update_pe():
 with st.sidebar:
     with st.form("event_selection"):
         st.markdown("### Select events")
-        ev1 = st.selectbox('Event 1', eventlist,  key='ev1')
+        ev1 = st.selectbox('Event 1', eventlist,  key='ev1', index=startindex)
         ev2 = st.selectbox('Event 2', eventlist2,  key='ev2')    
         ev3 = st.selectbox('Event 3', eventlist2,  key='ev3')
         submitted = st.form_submit_button("Update data", on_click=update_pe)
