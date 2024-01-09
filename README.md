@@ -29,6 +29,13 @@ In many cases, the 1-D and 2-D posterior plots are made using
 mixed samples, which are a combination of samples from mulitple
 PE runs.  
 
+## Zenodo data releases
+
+Posterior samples used in this app are available in the [zenodo LVK Community](https://zenodo.org/communities/ligo-virgo-kagra):
+
+ * [GWTC-3 Sample Release](https://doi.org/10.5281/zenodo.8177023)
+ * [GWTC-2.1 Sample Release](https://doi.org/10.5281/zenodo.6513631)
+
 
 ## 2-D Plots
 
@@ -68,6 +75,17 @@ detector data, so that you can compare how the data
 looks against the theoretical waveform.
 
 The waveform app will only work with the first selected event - events are ignored for this feature.
+
+## Make plots like this!
+
+This app uses code from the package
+[pesummary](https://lscsoft.docs.ligo.org/pesummary/stable_docs/index.html)
+to create many of the displayed plots.
+
+**Python code for these plots is demonstrated in a
+[Jupyter Notebook](https://zenodo.org/records/8177023/preview/GWTC3p0PEDataReleaseExample.ipynb?include_deleted=0)
+in the 
+[GWTC-3 Sample Release](https://doi.org/10.5281/zenodo.8177023)**.
 
 ## Acknowledgment
 
