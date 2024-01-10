@@ -97,6 +97,13 @@ with about:
 if 'datadict' not in st.session_state:
     update_pe()
 
+
+# -- Add share info
+with about:
+    st.markdown("## Share this page")
+    st.markdown(":link: [Link to share these plots](/?event1={0}&event2={1}&event3={2})".format(ev1, ev2, ev3)) 
+
+
 # -- Short-cut variable names
 datadict = st.session_state['datadict']
 published_dict = st.session_state['published_dict']
