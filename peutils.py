@@ -173,8 +173,9 @@ def get_pe_url(event):
                     return peinfo['data_url'], peinfo['waveform_family']
 
 
-# -- Set the default event choice to any events in the GET request
-# -- Use keys event1, event2, event3.  Default to 0 if key not found.
+# -- Set the default event choice index to any events in the GET request
+# -- Use keys event1, event2, event3.
+# -- Default to 0 for any key not found.
 def get_getparams(eventlist, eventlist2):
     getparam = st.experimental_get_query_params()
 
@@ -190,7 +191,6 @@ def get_getparams(eventlist, eventlist2):
                     startindex = eventlist2.index(event)
 
         indexlist.append(startindex)
-    st.text(indexlist)
     return indexlist
 
 if __name__ == '__main__':
