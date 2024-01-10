@@ -35,14 +35,6 @@ eventlist2.insert(0,None)
 # -- Check for any get params
 startindex1, startindex2, startindex3 = get_getparams(eventlist,eventlist2)
 
-#getparam = st.experimental_get_query_params()
-#startindex = 0
-#if 'event1' in getparam:
-#    event1 = getparam['event1'][0]
-#    if event1 in eventlist:
-#        startindex = eventlist.index(event1)
-
-
 # -- Helper method to get list of events
 def get_event_list():
     x = [st.session_state['ev1'], 
