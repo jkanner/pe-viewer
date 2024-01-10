@@ -32,6 +32,9 @@ eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GW
 eventlist2 = deepcopy(eventlist)
 eventlist2.insert(0,None)  
 
+# -- Check for any get params
+startindex1, startindex2, startindex3 = get_getparams(eventlist,eventlist2)
+
 # -- Helper method to get list of events
 def get_event_list():
     x = [st.session_state['ev1'], 
@@ -54,9 +57,9 @@ def update_pe():
 with st.sidebar:
     with st.form("event_selection"):
         st.markdown("### Select events")
-        ev1 = st.selectbox('Event 1', eventlist,  key='ev1')
-        ev2 = st.selectbox('Event 2', eventlist2,  key='ev2')    
-        ev3 = st.selectbox('Event 3', eventlist2,  key='ev3')
+        ev1 = st.selectbox('Event 1', eventlist,  key='ev1', index=startindex1)
+        ev2 = st.selectbox('Event 2', eventlist2,  key='ev2', index=startindex2)    
+        ev3 = st.selectbox('Event 3', eventlist2,  key='ev3', index=startindex3)
         submitted = st.form_submit_button("Update data", on_click=update_pe)
 
 chosenlist = get_event_list()
@@ -85,6 +88,13 @@ with about:
 # -- Initialize session state (e.g. download GW150914 data)
 if 'datadict' not in st.session_state:
     update_pe()
+
+
+# -- Add share info
+with about:
+    st.markdown("## Share this page")
+    st.markdown(":link: [Link to share these plots](/?event1={0}&event2={1}&event3={2})".format(ev1, ev2, ev3)) 
+
 
 # -- Short-cut variable names
 datadict = st.session_state['datadict']
