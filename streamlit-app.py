@@ -14,7 +14,13 @@ matplotlib.use('Agg')
 from matplotlib.backends.backend_agg import RendererAgg
 lock = RendererAgg.lock
 
-st.set_page_config(layout="wide")
+st.set_page_config(layout="centered",
+                   page_title="GW Event Viewer",
+                   page_icon="https://gwosc.org/static/images/icons/gwosc-fav.ico",
+                   menu_items = { "Get help": "https://ask.igwn.org",
+                                  "Report a Bug": "https://github.com/jkanner/pe-viewer/issues",
+                                  "About": "This app was created by staff at the [Gravitational Wave Open Science Center](https://gwosc.org)."})
+
 st.title('GW Event Viewer')
 
 st.markdown("""Make plots of waveforms, source parameters, and skymaps for gravitational-wave events.
@@ -125,9 +131,11 @@ with twodim:
     except:
         indx1 = 0
         indx2 = 1
-        
-    param1 = st.selectbox( 'Parameter 1', params, index=indx1 )
-    param2 = st.selectbox( 'Parameter 2', params, index=indx2 )
+
+    with st.form('twodimform'):
+        param1 = st.selectbox( 'Parameter 1', params, index=indx1 )
+        param2 = st.selectbox( 'Parameter 2', params, index=indx2 )
+        st.form_submit_button('Update plots')
 
     # -- Make plot based on selected parameters
     st.markdown("### Triangle plot")
