@@ -32,8 +32,6 @@ st.image('img/black-hole-ellipse.png')
 eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
                           optional=False)
 
-
-
 # -- 2nd and 3rd events are optional, so include "None" option
 eventlist2 = deepcopy(eventlist)
 eventlist2.insert(0,None)  
@@ -146,7 +144,6 @@ with twodim:
                                     grid=False)
         st.pyplot(fig[0])
 
-
     for param in [param1, param2]:
         st.markdown("### {0}".format(param))
         with lock:
@@ -154,13 +151,11 @@ with twodim:
             # fig = published_dict.plot(param, type='hist', kde=True, module='gw') #-- pesummary v 0.11.0
             st.pyplot(fig)
 
-
 with skymap:
     make_skymap(chosenlist, datadict)
 
 with onedim:    
     make_altair_plots(chosenlist, published_dict)
-
 
 with waveform:
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
@@ -172,7 +167,6 @@ with waveform:
         st.write("Unable to generate maximum likelihood waveform.  Making approximate waveform instead.")
         simple_plot_waveform(ev1)
     
-
 with config:
 
     # -- Check cache status
@@ -181,7 +175,6 @@ with config:
     cachesize = len(cachelist)
     cachepercent = int(cachesize / len(eventlist) * 100)
     st.metric('Cache Size:', '{0}%'.format(cachepercent))
-
 
     st.write("## Build Cache")
     st.write("""This app uses a local cache to store data downloaded from zenodo.  The cache is designed to 
@@ -192,7 +185,6 @@ with config:
         st.button('Build Cache', on_click=stockcache, args=[eventlist], type='primary')
     else:
         st.write("Cache is complete!")
-
     
     st.write("## Clear Cache")
     st.write("""Clearing the cache will force the app
