@@ -178,7 +178,6 @@ def get_pe_url(event):
 # -- Default to 0 for any key not found.
 def get_getparams(eventlist, eventlist2):
     getparam = st.query_params
-    st.write(getparam)
 
     indexlist = []
     for key in ['event1', 'event2', 'event3']:
