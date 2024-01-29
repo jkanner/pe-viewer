@@ -182,26 +182,26 @@ with config:
     cachepercent = int(cachesize / len(eventlist) * 100)
     st.metric('Cache Size:', '{0}%'.format(cachepercent))
 
-    with st.expander('Manage Cache'):
-        st.write("## Build Cache")
-        st.write("""This app uses a local cache to store data downloaded from zenodo.  The cache is designed to 
+
+    st.write("## Build Cache")
+    st.write("""This app uses a local cache to store data downloaded from zenodo.  The cache is designed to 
             build up over time as the app is used, or the cache may be built on-demand.  This process could take
             up to several hours, but may improve app performance after it is complete.""")
 
-        if cachepercent < 99:
-            st.button('Build Cache', on_click=stockcache, args=[eventlist], type='primary')
-        else:
-            st.write("Cache is complete!")
+    if cachepercent < 99:
+        st.button('Build Cache', on_click=stockcache, args=[eventlist], type='primary')
+    else:
+        st.write("Cache is complete!")
 
+    
+    st.write("## Clear Cache")
+    st.write("""Clearing the cache will force the app
+       to download samples directly from zenodo.
+       This may slow down the app.""")
 
-        st.write("## Clear Cache")
-        st.write("""Clearing the cache will force the app
-        to download samples directly from zenodo.
-        This may slow down the app.""")
-
+    with st.expander('Clear Cache'):
+        st.warning("WARNING: Clearing the cache will slow down the app for all users.", icon="⚠️")
         if st.button("Clear Cache", type='primary'):
-            # Clear values from *all* all in-memory and on-disk data caches:
-            # i.e. clear values from both square and cube
             st.cache_data.clear()
 
 
