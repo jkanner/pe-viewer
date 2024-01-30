@@ -30,7 +30,7 @@ lock = RendererAgg.lock
 
 
 # -- Query for eventlist
-@st.cache
+@st.cache_data
 def get_eventlist(catalog=None, optional=False):
 
     eventlist = []
@@ -76,7 +76,7 @@ def make_datadict(chosenlist):
     return datadict
 
 # -- Load PE samples from web
-@st.cache(max_entries=1, show_spinner=False, persist=True)
+@st.cache_data(max_entries=1, show_spinner=False, persist=True)
 def load_samples(event, gwtc=True):
     if gwtc:
         url, waveform = get_pe_url(event)
@@ -134,7 +134,7 @@ ALL_PARAM = ['a_1', 'a_2', 'chi_eff', 'chi_p', 'chirp_mass',
 
 
 # -- Load strain data
-@st.cache(max_entries=6)   #-- Magic command to cache data
+@st.cache_data(max_entries=6)   #-- Magic command to cache data
 def load_strain(t0, detector):
     straindata = TimeSeries.fetch_open_data(detector, t0-14, t0+14, cache=False)
     return straindata
@@ -148,7 +148,7 @@ def get_params_intersect(sample_dict, chosenlist):
  
 
 # -- Find URL of the PE set
-@st.cache(max_entries=200)
+@st.cache_data(max_entries=200)
 def get_pe_url(event):
     url = 'https://gwosc.org/eventapi/json/GWTC/'
     gwtc = requests.get(url).json()
@@ -177,13 +177,13 @@ def get_pe_url(event):
 # -- Use keys event1, event2, event3.
 # -- Default to 0 for any key not found.
 def get_getparams(eventlist, eventlist2):
-    getparam = st.experimental_get_query_params()
+    getparam = st.query_params
 
     indexlist = []
     for key in ['event1', 'event2', 'event3']:
         startindex = 0
         if key in getparam:
-            event = getparam[key][0]
+            event = getparam[key]
             if event in eventlist:
                 if key=='event1':
                     startindex = eventlist.index(event)

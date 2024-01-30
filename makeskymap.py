@@ -28,8 +28,15 @@ def make_skymap(chosenlist, datadict):
         # -- All other events       
         else:         
             data = datadict[ev]
-            aprx_dict[ev] = st.radio("Select set of samples to use", data.skymap.keys(), key='aprx_'+ev)
+            aprx_dict[ev] = st.radio("Select set of samples to use", data.skymap.keys(), key='aprx_'+ev, format_func=frmt_keyname)
             with lock:
-                fig = data.skymap[aprx_dict[ev]].plot(contour=[50, 90])
-                st.pyplot(fig[0])
-        
+
+                try:
+                    fig = data.skymap[aprx_dict[ev]].plot(contour=[50, 90])
+                    st.pyplot(fig[0])
+                except:
+                    st.markdown("Failed to generate skymap")
+
+
+def frmt_keyname(name):
+    return "`" + name + "`"
