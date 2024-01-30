@@ -171,7 +171,7 @@ with config:
 
     # -- Check cache status
     homedir = os.path.expanduser('~')
-    cachelist = glob.glob(homedir + '/.streamlit/cache/*.pickle')
+    cachelist = glob.glob(homedir + '/.streamlit/cache/*.memo')
     cachesize = len(cachelist)
     cachepercent = int(cachesize / len(eventlist) * 100)
     st.metric('Cache Size:', '{0}%'.format(cachepercent))
