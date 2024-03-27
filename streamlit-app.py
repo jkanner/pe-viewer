@@ -2,7 +2,8 @@ import streamlit as st
 import pesummary
 from pesummary.io import read
 from peutils import *
-from makewaveform import make_waveform, simple_plot_waveform
+# from makewaveform import make_waveform, simple_plot_waveform
+from makewaveform2 import make_waveform
 from makealtair import make_altair_plots, get_params_intersect
 from makeskymap import make_skymap
 from copy import deepcopy
@@ -196,11 +197,14 @@ with waveform:
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
     st.markdown("This app only creates waveforms for one event (Event 1) to reduce run time.")
 
-    try:
-        make_waveform(ev1, datadict)
-    except:
-        st.write("Unable to generate maximum likelihood waveform.  Making approximate waveform instead.")
-        simple_plot_waveform(ev1)
+    make_waveform(ev1, datadict)
+    
+    #try:
+        #make_waveform(ev1, datadict)
+    #except:
+        #st.write("Unable to generate maximum likelihood waveform.  Making approximate waveform instead.")
+        #st.write('waveform disabled')
+        # simple_plot_waveform(ev1)
     
 
 

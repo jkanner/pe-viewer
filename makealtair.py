@@ -9,9 +9,6 @@ import io
 from scipy.io import wavfile
 from copy import deepcopy
 
-from pycbc.frame import read_frame
-from pycbc.waveform import get_td_waveform
-from pycbc.detector import Detector
 import os
 import base64
 
