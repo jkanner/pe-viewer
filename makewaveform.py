@@ -9,9 +9,10 @@ import io
 from scipy.io import wavfile
 from copy import deepcopy
 
-from pycbc.frame import read_frame
-from pycbc.waveform import get_td_waveform
-from pycbc.detector import Detector
+#from pycbc.frame import read_frame
+#from pycbc.waveform import get_td_waveform
+#from pycbc.detector import Detector
+
 import os
 import base64
 
@@ -19,7 +20,7 @@ from gwosc import datasets
 from gwosc.api import fetch_event_json
 from peutils import *
 
-from pycbc.waveform import td_approximants, fd_approximants
+# from pycbc.waveform import td_approximants, fd_approximants
 
 
 # -- Try download for waveform data
@@ -27,7 +28,7 @@ def get_download_link(signal, filename='waveform.csv'):
     """
     Generates a link allowing the data in a pycbc strain timeseries
     """
-    data_dict = {'Time':signal.sample_times, 'Strain':signal.data}
+    data_dict = {'Time':signal.times, 'Strain':signal.value}
     data = pd.DataFrame(data_dict)
     csv = data.to_csv(index=False)
     b64 = base64.b64encode(csv.encode()).decode()  # some strings <-> bytes conversions necessary here
@@ -55,8 +56,8 @@ def make_audio_file(bp_data, t0=None, lowpass=False):
 def plot_signal(signal, color_num=0, display=True, pycbc=True):
     if pycbc:
         source = pd.DataFrame({
-            'Time (s)': signal.sample_times[...],
-            'Strain / 1e-21': signal.data / 1e-21,
+            'Time (s)': signal.times[...],
+            'Strain / 1e-21': signal.value / 1e-21,
             'color':['#1f77b4', '#ff7f0e'][color_num]
         })
 
@@ -97,16 +98,10 @@ def plot_white_signal(signal, color_num=0, display=True):
 
     return(chart)
 
-def make_waveform(event, datadict):
-
-    
+def make_waveform(event, datadict):    
     
     pedata = datadict[event]
 
-    #st.write(pedata.config)
-    # -- Get waveform name
-    #aprx = pedata.approximant[0]
-    #st.write('Waveform Family: ', aprx)
     
     # -- Get dictionary of samples, indexed by run
     samples_dict = pedata.samples_dict
@@ -125,21 +120,18 @@ def make_waveform(event, datadict):
     
     # -- Get a single run
     posterior_samples = samples_dict[indx]
-
+    
     # -- Get reference frequency
     try:
         fref = float(pedata.config[indx]['engine']['fref'])
     except:
         fref = float(pedata.config[indx]['config']["reference-frequency"])
-    #st.write('fref', fref)
-    
-    # -- Get an array of log likelihoods
-    loglike = posterior_samples['log_likelihood']
     
     # -- Find the index of max log likelihood
     st.write("Finding maximum likelihood sample ...")
+    loglike = posterior_samples['log_likelihood']
     maxl_index = loglike.argmax()
-
+    
     # -- Example parameter
     chirp_mass = posterior_samples['chirp_mass'][maxl_index]
     mass1 = posterior_samples['mass_1'][maxl_index]
@@ -157,51 +149,32 @@ def make_waveform(event, datadict):
         f_low = 60
         fs = 4096
     else:
-        f_low = 30
+        f_low = 20
         fs = 4096
-        
-    # -- Try to construct waveform
-    # -- Adoped from Dicong Liang
-    # -- https://github.com/losc-tutorial/make-waveform/
-    #st.write(aprx)
-    #st.write(mass1)
-    #st.write(fref)
-    #st.write(td_approximants())
-    hp, hc = get_td_waveform(approximant=aprx,
-                             mass1=posterior_samples['mass_1'][maxl_index],
-                             mass2=posterior_samples['mass_2'][maxl_index],
-                             distance=posterior_samples['luminosity_distance'][maxl_index],
-                             coa_phase=posterior_samples['phase'][maxl_index],
-                             inclination=posterior_samples['theta_jn'][maxl_index],
-                             spin1x=posterior_samples['spin_1x'][maxl_index],
-                             spin1y=posterior_samples['spin_1y'][maxl_index],
-                             spin1z=posterior_samples['spin_1z'][maxl_index],
-                             spin2x=posterior_samples['spin_2x'][maxl_index],
-                             spin2y=posterior_samples['spin_2y'][maxl_index],
-                             spin2z=posterior_samples['spin_2z'][maxl_index],
-                             delta_t=1.0/fs,
-                             f_ref=fref,
-                             f_lower=f_low)
 
-    # -- Crop waveform, if longer than 8 seconds
+    hp_dict = posterior_samples.maxL_td_waveform(aprx,
+                                            delta_t=1/fs,
+                                            f_low=f_low,
+                                            f_ref=f_low)
+
+    hp = hp_dict['h_plus']
+    
+ 
+    t0 = datasets.event_gps(event)
     hp_length = len(hp) / fs
     if hp_length > 8:
-        hp = hp.crop( hp_length-8, 0 )
-        hc = hc.crop( hp_length-8, 0 )
+        hp = hp.crop( t0-7, t0+1 )
 
     # -- Plot waveform w/ altair
     plot_signal(hp)
-
+    
     # -- Make audio files
-    hp_gwpy = gwpy.timeseries.TimeSeries(hp.data, times=hp.sample_times)
-    st.audio(make_audio_file(hp_gwpy))
+    st.audio(make_audio_file(hp))
     
     # -- Make file for download
     outfile = io.StringIO()
-    #outfile = io.BytesIO()
-    outdata = zip(hp_gwpy.times, hp_gwpy.value)
+    outdata = zip(hp.times, hp.value)
     for t, s in outdata:
-        #st.write('{0}, {1}\n'.format(t.value, s))
         outfile.write('{0}, {1}\n'.format(t.value, s))
     
     url = get_download_link(hp, filename="{0}_waveform.csv".format(event))
@@ -209,7 +182,6 @@ def make_waveform(event, datadict):
     st.markdown(url, unsafe_allow_html=True)
 
     # -- Get detector / gps info
-    t0 = datasets.event_gps(event)
     detectorlist = list(datasets.event_detectors(event))
     detectorlist.sort()
     
@@ -224,7 +196,7 @@ def make_waveform(event, datadict):
     freqrange = st.slider('Band-pass frequency range (Hz)', min_value=10, max_value=2000, value=(30,400), key=event)
     
     for ifo in detectorlist:
-
+        
         st.markdown("### {0}".format(ifo))
         # -- Get strain data
         straindata = load_strain(t0, ifo)
@@ -239,30 +211,19 @@ def make_waveform(event, datadict):
         # plot_white_signal(bp_cropped)
         
         # -- Project waveform onto detector
-        # -- Get max L coordinates
-        ra=posterior_samples['ra'][maxl_index]
-        dec=posterior_samples['dec'][maxl_index]
-        psi=posterior_samples['psi'][maxl_index]
-        gct=posterior_samples['geocent_time'][maxl_index]
+        hp = posterior_samples.maxL_td_waveform(aprx,
+                                            delta_t=1/fs,
+                                            f_low=f_low,
+                                            f_ref=f_low,
+                                            project=ifo)
 
-        # -- Get time at detector
-        de_time=gct+Detector(ifo).time_delay_from_earth_center(ra,dec,gct)
-
-        # -- Calculate antenna pattern
-        fp, fc= Detector(ifo).antenna_pattern(ra, dec, psi, de_time)
-        ht = fp*hp.copy() + fc*hc.copy()
-
-        ht.resize(len(strain))
-        template = ht.cyclic_time_shift(ht.start_time)
-
-        time_diff = de_time - strain.t0.value
-        aligned = template.cyclic_time_shift(time_diff)
-        aligned.start_time=strain.t0.value
-
-        aligned_gwpy = gwpy.timeseries.TimeSeries(aligned.data, times=aligned.sample_times)
+        # -- Zero pad
+        hp = hp.pad(4*fs)
         
         # -- whiten and bandpass template
-        white_temp = aligned_gwpy.whiten(asd=asd)
+        st.write("Length waveform", len(hp))
+        st.write("Length strain", len(strain))
+        white_temp = hp.whiten(asd=asd)
         bp_temp = white_temp.bandpass(freqrange[0], freqrange[1])
         crop_temp = bp_temp.crop(cropstart, cropend)
 
@@ -270,9 +231,8 @@ def make_waveform(event, datadict):
         chart2 = plot_white_signal(crop_temp, color_num=1, display=False)
 
         st.altair_chart(chart1+chart2, use_container_width=True)
+
         
-
-
 def simple_plot_waveform(name):
 
     # -- Get median values from GWOSC web site
