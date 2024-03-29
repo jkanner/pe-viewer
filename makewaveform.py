@@ -53,20 +53,12 @@ def make_audio_file(bp_data, t0=None, lowpass=False):
 
 
 # -- Plotting helper function
-def plot_signal(signal, color_num=0, display=True, pycbc=True):
-    if pycbc:
-        source = pd.DataFrame({
-            'Time (s)': signal.times[...],
-            'Strain / 1e-21': signal.value / 1e-21,
-            'color':['#1f77b4', '#ff7f0e'][color_num]
-        })
-
-    else:
-        source = pd.DataFrame({
-            'Time (s)': signal.times,
-            'Strain / 1e-21': signal.value / 1e-21,
-            'color':['#1f77b4', '#ff7f0e'][color_num]
-        })
+def plot_signal(signal, color_num=0, display=True):
+    source = pd.DataFrame({
+        'Time (s)': signal.times[...],
+        'Strain / 1e-21': signal.value / 1e-21,
+        'color':['#1f77b4', '#ff7f0e'][color_num]
+    })
         
     chart = alt.Chart(source).mark_line().encode(
         alt.X('Time (s)'),
@@ -158,7 +150,8 @@ def make_waveform(event, datadict):
                                             f_ref=f_low)
 
     hp = hp_dict['h_plus']
-    
+
+    st.write(hp.times)
  
     t0 = datasets.event_gps(event)
     hp_length = len(hp) / fs
@@ -217,12 +210,12 @@ def make_waveform(event, datadict):
                                             f_ref=f_low,
                                             project=ifo)
 
+        # -- Taper and zero pad
+        hp = hp.taper()
         # -- Zero pad
-        hp = hp.pad(4*fs)
+        hp = hp.pad(6*fs)
         
         # -- whiten and bandpass template
-        st.write("Length waveform", len(hp))
-        st.write("Length strain", len(strain))
         white_temp = hp.whiten(asd=asd)
         bp_temp = white_temp.bandpass(freqrange[0], freqrange[1])
         crop_temp = bp_temp.crop(cropstart, cropend)
