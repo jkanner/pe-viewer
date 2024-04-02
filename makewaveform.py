@@ -221,6 +221,7 @@ def make_waveform(event, datadict):
 
         chart1 = plot_white_signal(bp_cropped, color_num=2, display=False)
         chart2 = plot_white_signal(crop_temp, color_num=1, display=False)
+        
 
         st.altair_chart(chart1+chart2, use_container_width=True)
 

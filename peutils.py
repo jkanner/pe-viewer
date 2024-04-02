@@ -85,7 +85,7 @@ def load_samples(event, gwtc=True):
         r = requests.get(url)
         tfile = tempfile.NamedTemporaryFile(suffix='.h5')
         tfile.write(r.content)
-        samples = read(tfile.name)
+        samples = read(tfile.name, disable_prior=True)
         
     except:
         url = 'https://dcc.ligo.org/public/0157/P1800370/005/{0}_GWTC-1.hdf5'.format(event)
@@ -93,9 +93,9 @@ def load_samples(event, gwtc=True):
         tfile = tempfile.NamedTemporaryFile(suffix='.h5')
         tfile.write(r.content)
         if event == 'GW170817':
-            samples = read(tfile.name, path_to_samples="IMRPhenomPv2NRT_lowSpin_posterior")
+            samples = read(tfile.name, path_to_samples="IMRPhenomPv2NRT_lowSpin_posterior", disable_prior=True)
         else:
-            samples = read(tfile.name)
+            samples = read(tfile.name, disable_prior=True)
 
     try: 
         samples.downsample(2000)
