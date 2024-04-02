@@ -9,18 +9,12 @@ import io
 from scipy.io import wavfile
 from copy import deepcopy
 
-#from pycbc.frame import read_frame
-#from pycbc.waveform import get_td_waveform
-#from pycbc.detector import Detector
-
 import os
 import base64
 
 from gwosc import datasets
 from gwosc.api import fetch_event_json
 from peutils import *
-
-# from pycbc.waveform import td_approximants, fd_approximants
 
 
 # -- Try download for waveform data
@@ -93,18 +87,21 @@ def plot_white_signal(signal, color_num=0, display=True):
 def make_waveform(event, datadict):    
     
     pedata = datadict[event]
-
     
     # -- Get dictionary of samples, indexed by run
     samples_dict = pedata.samples_dict
-    #indxlist = list(samples_dict.keys())
-    #indx = indxlist[0]
 
     # -- For now, hard code approxmiate to IMRPhenomXPHM
-    aprx = 'IMRPhenomXPHM'
+    # aprx = 'IMRPhenomXPHM'
 
+    # -- Clean list of approximates
+    aprxlist =  deepcopy(pedata.approximant)
+
+    for item in aprxlist:
+        if type(item) != str:  aprxlist.remove(item)
+    
     # -- Select corresponding samples
-    #aprx = st.radio("Select set of samples to use", pedata.approximant, key='aprx_waveform'+event)
+    aprx = st.radio("Select set of samples to use", aprxlist, key='aprx_waveform'+event)
     indx_num = pedata.approximant.index(aprx)
     indx = list(samples_dict.keys())[indx_num]
     st.text('Waveform Family: {0}'.format(aprx))
@@ -118,7 +115,9 @@ def make_waveform(event, datadict):
         fref = float(pedata.config[indx]['engine']['fref'])
     except:
         fref = float(pedata.config[indx]['config']["reference-frequency"])
-    
+
+    st.write("Got fref for aprx", fref, aprx)
+        
     # -- Find the index of max log likelihood
     st.write("Finding maximum likelihood sample ...")
     loglike = posterior_samples['log_likelihood']
@@ -147,7 +146,7 @@ def make_waveform(event, datadict):
     hp_dict = posterior_samples.maxL_td_waveform(aprx,
                                             delta_t=1/fs,
                                             f_low=f_low,
-                                            f_ref=f_low)
+                                            f_ref=fref)
 
     hp = hp_dict['h_plus']
 
@@ -207,8 +206,10 @@ def make_waveform(event, datadict):
         hp = posterior_samples.maxL_td_waveform(aprx,
                                             delta_t=1/fs,
                                             f_low=f_low,
-                                            f_ref=f_low,
+                                            f_ref=fref,
                                             project=ifo)
+
+        st.write(aprx)
 
         # -- Taper and zero pad
         hp = hp.taper()
