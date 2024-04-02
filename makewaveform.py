@@ -115,8 +115,6 @@ def make_waveform(event, datadict):
         fref = float(pedata.config[indx]['engine']['fref'])
     except:
         fref = float(pedata.config[indx]['config']["reference-frequency"])
-
-    st.write("Got fref for aprx", fref, aprx)
         
     # -- Find the index of max log likelihood
     st.write("Finding maximum likelihood sample ...")
