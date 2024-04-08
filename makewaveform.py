@@ -97,9 +97,11 @@ def make_waveform(event, datadict):
     # -- Clean list of approximates
     aprxlist =  deepcopy(pedata.approximant)
 
-    for item in aprxlist:
-        if type(item) != str:  aprxlist.remove(item)
-    
+    for item in pedata.approximant:
+        if type(item) != str:  aprxlist.remove(item)    #-- Remove items where no approxmiant is found
+        if item == 'SEOBNRv4PHM': aprxlist.remove(item) #-- Remove waveforms used by RIFT, because RIFT does not report times
+                
+        
     # -- Select corresponding samples
     aprx = st.radio("Select set of samples to use", aprxlist, key='aprx_waveform'+event)
     indx_num = pedata.approximant.index(aprx)
@@ -147,8 +149,6 @@ def make_waveform(event, datadict):
                                             f_ref=fref)
 
     hp = hp_dict['h_plus']
-
-    st.write(hp.times)
  
     t0 = datasets.event_gps(event)
     hp_length = len(hp) / fs
@@ -188,6 +188,7 @@ def make_waveform(event, datadict):
     for ifo in detectorlist:
         
         st.markdown("### {0}".format(ifo))
+
         # -- Get strain data
         straindata = load_strain(t0, ifo)
         strain = deepcopy(straindata)
@@ -212,7 +213,7 @@ def make_waveform(event, datadict):
         # -- Taper and zero pad
         hp = hp.taper()
         # -- Zero pad
-        hp = hp.pad(6*fs)
+        hp = hp.pad(60*fs)
         
         # -- whiten and bandpass template
         white_temp = hp.whiten(asd=asd)
@@ -225,8 +226,61 @@ def make_waveform(event, datadict):
 
         st.altair_chart(chart1+chart2, use_container_width=True)
 
+
+def simple_plot_gwtc1(name, datadict):
+
+    # -- Special case for GW170817    
+    from pesummary.utils.samples_dict import SamplesDict
         
+    aprx = 'IMRPhenomXPHM'
+    fs = 4096
+
+    keys = list(datadict.keys())
+    samples = datadict[keys[0]].samples_dict
+
+    dummysamples = [np.zeros(len(samples['ra']))]
+    dummysamples.append(np.zeros(len(samples['ra'])))
+    for this_param in samples.samples:
+        dummysamples.append(this_param)
+
+    parameters = ["iota", "log_likelihood"] + samples.parameters
+    dummyDict = SamplesDict(parameters, dummysamples)
+    
+    samples = dummyDict
+    hp_dict = samples.maxL_td_waveform(aprx,
+                                            delta_t=1/fs,
+                                            f_low=100,
+                                            f_ref=100)
+
+    hp = hp_dict['h_plus']
+
+ 
+    t0 = datasets.event_gps(name)
+    hp_length = len(hp) / fs
+    if hp_length > 8:
+        hp = hp.crop( t0-7, t0+1 )
+
+    # -- Plot waveform w/ altair
+    plot_signal(hp)
+    
+    # -- Make audio files
+    st.audio(make_audio_file(hp))
+    
+    # -- Make file for download
+    outfile = io.StringIO()
+    outdata = zip(hp.times, hp.value)
+    for t, s in outdata:
+        outfile.write('{0}, {1}\n'.format(t.value, s))
+    
+    url = get_download_link(hp, filename="{0}_waveform.csv".format(name))
+    
+    st.markdown(url, unsafe_allow_html=True)
+
+    
 def simple_plot_waveform(name):
+    # ---------------------------------------
+    # DEPRECATED: Uses pycbc to plot waveform   
+    # --------------------------------------
 
     # -- Get median values from GWOSC web site
     eventlist = datasets.find_datasets(type='events', catalog='GWTC-1-confident')
