@@ -59,7 +59,6 @@ def plot_signal(signal, color_num=0, display=True):
         alt.Y('Strain / 1e-21:Q'),
         color=alt.Color('color', scale=None),
     )
-    #.interactive(bind_y = False)
 
     if display:
         st.altair_chart(chart, use_container_width=True)
@@ -209,39 +208,21 @@ def make_waveform(event, datadict):
                                             project=ifo)
 
         st.write(aprx)
-
-        #plot_signal(hp)
-        st.write(hp.t0, len(hp) / 4096)
-        st.write(hp)
         
         # -- Taper and zero pad
         hp = hp.taper()
         # -- Zero pad
         hp = hp.pad(60*fs)
 
-        st.write('pad',hp)
-        #plot_signal(hp)
-        
         # -- whiten and bandpass template
         white_temp = hp.whiten(asd=asd)
-
-        st.write('white', white_temp)
-        
         bp_temp = white_temp.bandpass(freqrange[0], freqrange[1])
-
-        st.write('bp', bp_temp)
-        
         crop_temp = bp_temp.crop(cropstart, cropend)
-
-        st.write('crop', crop_temp)
-        plot_signal(crop_temp)
         
         chart1 = plot_white_signal(bp_cropped, color_num=2, display=False)
         chart2 = plot_white_signal(crop_temp, color_num=1, display=False)
-        
 
         st.altair_chart(chart1+chart2, use_container_width=True)
-
 
 def simple_plot_gwtc1(name, datadict):
 
