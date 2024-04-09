@@ -210,16 +210,32 @@ def make_waveform(event, datadict):
 
         st.write(aprx)
 
+        #plot_signal(hp)
+        st.write(hp.t0, len(hp) / 4096)
+        st.write(hp)
+        
         # -- Taper and zero pad
         hp = hp.taper()
         # -- Zero pad
         hp = hp.pad(60*fs)
+
+        st.write('pad',hp)
+        #plot_signal(hp)
         
         # -- whiten and bandpass template
         white_temp = hp.whiten(asd=asd)
+
+        st.write('white', white_temp)
+        
         bp_temp = white_temp.bandpass(freqrange[0], freqrange[1])
+
+        st.write('bp', bp_temp)
+        
         crop_temp = bp_temp.crop(cropstart, cropend)
 
+        st.write('crop', crop_temp)
+        plot_signal(crop_temp)
+        
         chart1 = plot_white_signal(bp_cropped, color_num=2, display=False)
         chart2 = plot_white_signal(crop_temp, color_num=1, display=False)
         
@@ -229,15 +245,23 @@ def make_waveform(event, datadict):
 
 def simple_plot_gwtc1(name, datadict):
 
-    # -- Special case for GW170817    
+    # -- Special case for GW170817 and GW190425
     from pesummary.utils.samples_dict import SamplesDict
         
     aprx = 'IMRPhenomXPHM'
     fs = 4096
 
     keys = list(datadict.keys())
+
     samples = datadict[keys[0]].samples_dict
 
+    # -- test for single or multiple analyses
+    try:
+        test = samples['ra']
+    except:
+        samples = samples[list(samples.keys())[0]]
+
+    # -- Create dummy samples for params missing from GW170817
     dummysamples = [np.zeros(len(samples['ra']))]
     dummysamples.append(np.zeros(len(samples['ra'])))
     for this_param in samples.samples:
@@ -277,64 +301,3 @@ def simple_plot_gwtc1(name, datadict):
     st.markdown(url, unsafe_allow_html=True)
 
     
-def simple_plot_waveform(name):
-    # ---------------------------------------
-    # DEPRECATED: Uses pycbc to plot waveform   
-    # --------------------------------------
-
-    # -- Get median values from GWOSC web site
-    eventlist = datasets.find_datasets(type='events', catalog='GWTC-1-confident')
-    for ev in eventlist:
-        if name not in ev: continue
-
-        name = ev.split('-')[0]
-    #params = fetch_event_json(ev)['events'][ev]
-    eventinfo = fetch_event_json(name)['events']
-    event_id = list(eventinfo.keys())[0]
-    params   = eventinfo[event_id]
-    
-    # -- Generate waveform for each event based on 1-D parameters
-    st.markdown("Generating waveform based on marginalized 1-D parameters ...")
-    m1 = params['mass_1_source']
-    m2 = params['mass_2_source']
-    spin = params['chi_eff']
-    distance = params['luminosity_distance']
-    gps = datasets.event_gps(ev)
-    snr = float(params['network_matched_filter_snr'])
-
-    st.write("Mass 1", m1, "$M_{\odot}$")
-    st.write("Mass 2", m2, "$M_{\odot}$")
-    st.write("Effective Spin", spin)
-
-    
-    # -- Set different parameters based on BNS or BBH
-    fs = 4096
-    if (m2>5): 
-        apx = 'SEOBNRv2'
-        bphigh = 600
-        start_file = -2
-        flow=20
-    else: 
-        apx = 'SpinTaylorT4'
-        flow = 70
-        bphigh = 1100
-        start_file = -7
-        
-    hp, hc = get_td_waveform(approximant=apx,
-                                 mass1=m1,
-                                 mass2=m2,
-                                 spin1z=spin,
-                                 delta_t=1.0/fs,
-                                 distance = distance,
-                                 f_lower=flow)
-        
-
-    plot_signal(hp)
-    hp_gwpy = gwpy.timeseries.TimeSeries(hp.data, times=hp.sample_times)
-    st.audio(make_audio_file(hp_gwpy))
-
-    url = get_download_link(hp, filename="{0}_waveform.csv".format(name))
-    st.markdown(url, unsafe_allow_html=True)
-
-
-
