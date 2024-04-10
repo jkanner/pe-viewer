@@ -17,7 +17,6 @@ from peutils import *
 import pesummary
 from peutils import *
 
-
 def get_params_intersect(sample_dict, chosenlist):
     allparams = set(sample_dict[chosenlist[0]].parameters)
     for event in sample_dict.keys():
@@ -65,18 +64,13 @@ def make_altair_plots(chosenlist, sample_dict):
             if event is None: continue
 
             samples = sample_dict[event]
-
-            # -- Explore parameters
-            # st.markdown(samples.all_latex_labels[param])
-            #st.text(samples.parameters[0])
-            #st.text(dir(samples[param]))
             
             # -- Make histogram
             value, bins = np.histogram(samples[param], bins=50, density=True)
-
+            
             source = pd.DataFrame({
-                param: bins[1:],
-                'density': value,
+                param : bins[1:],
+                'Probability Density': value,
                 'Event': len(value)*[event]
             })
 
@@ -85,7 +79,7 @@ def make_altair_plots(chosenlist, sample_dict):
                 interpolate='step',
             ).encode(
                 alt.X(param),
-                alt.Y('density'),
+                alt.Y('Probability Density'),
                 color='Event:N')
 
             chartlist.append(chart)
@@ -95,16 +89,16 @@ def make_altair_plots(chosenlist, sample_dict):
             allchart+=chart
 
         # -- Def
-        refurl = 'https://lscsoft.docs.ligo.org/pesummary/stable_docs/gw/parameters.html#:~:text={0}'.format(param)
+        refurl = 'https://lscsoft.docs.ligo.org/pesummary/reference/gw/parameters.html#:~:text={0}'.format(param)
 
         unitlabel = samples.all_latex_labels[param]
         
         #st.altair_chart(allchart, use_container_width=True)
         if (count % 2):
-            col2.markdown("#### {2} - [{0}]({1})".format(param, refurl, unitlabel))
+            col2.markdown("### [{1}]({0})".format(refurl, unitlabel))
             col2.altair_chart(allchart, use_container_width=True)
         else:
-            col1.markdown("#### {2} - [{0}]({1})".format(param, refurl, unitlabel))
+            col1.markdown("### [{1}]({0})".format(refurl, unitlabel))
             col1.altair_chart(allchart, use_container_width=True)
 
     # unravel the histogram
