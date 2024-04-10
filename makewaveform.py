@@ -97,10 +97,11 @@ def make_waveform(event, datadict):
     aprxlist =  deepcopy(pedata.approximant)
 
     for item in pedata.approximant:
-        if type(item) != str:  aprxlist.remove(item)    #-- Remove items where no approxmiant is found
-        if item == 'SEOBNRv4PHM': aprxlist.remove(item) #-- Remove waveforms used by RIFT, because RIFT does not report times
-                
-        
+        #-- Remove items where no approxmiant is found
+        if type(item) != str:  aprxlist.remove(item)
+        #-- Remove waveforms with no GPS info
+        if item == 'SEOBNRv4PHM': aprxlist.remove(item) 
+                        
     # -- Select corresponding samples
     aprx = st.radio("Select set of samples to use", aprxlist, key='aprx_waveform'+event)
     indx_num = pedata.approximant.index(aprx)
@@ -181,6 +182,7 @@ def make_waveform(event, datadict):
 
     st.markdown("## Project waveform onto each detector")
     st.markdown("Whitened and band-passed detector data in gray, with projected waveform in orange.")
+    
     # -- Band-pass controls
     freqrange = st.slider('Band-pass frequency range (Hz)', min_value=10, max_value=2000, value=(30,400), key=event)
     
@@ -224,7 +226,7 @@ def make_waveform(event, datadict):
 
         st.altair_chart(chart1+chart2, use_container_width=True)
 
-def simple_plot_gwtc1(name, datadict):
+def simple_make_waveform(name, datadict):
 
     # -- Special case for GW170817 and GW190425
     from pesummary.utils.samples_dict import SamplesDict
@@ -233,7 +235,6 @@ def simple_plot_gwtc1(name, datadict):
     fs = 4096
 
     keys = list(datadict.keys())
-
     samples = datadict[keys[0]].samples_dict
 
     # -- test for single or multiple analyses
@@ -249,16 +250,14 @@ def simple_plot_gwtc1(name, datadict):
         dummysamples.append(this_param)
 
     parameters = ["iota", "log_likelihood"] + samples.parameters
-    dummyDict = SamplesDict(parameters, dummysamples)
+    finalsamples = SamplesDict(parameters, dummysamples)
     
-    samples = dummyDict
-    hp_dict = samples.maxL_td_waveform(aprx,
+    hp_dict = finalsamples.maxL_td_waveform(aprx,
                                             delta_t=1/fs,
                                             f_low=100,
                                             f_ref=100)
 
     hp = hp_dict['h_plus']
-
  
     t0 = datasets.event_gps(name)
     hp_length = len(hp) / fs
@@ -278,7 +277,4 @@ def simple_plot_gwtc1(name, datadict):
         outfile.write('{0}, {1}\n'.format(t.value, s))
     
     url = get_download_link(hp, filename="{0}_waveform.csv".format(name))
-    
     st.markdown(url, unsafe_allow_html=True)
-
-    
