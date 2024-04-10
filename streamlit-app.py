@@ -1,6 +1,10 @@
 import streamlit as st
 import pesummary
 from pesummary.io import read
+from pesummary.utils.bounded_2d_kde import Bounded_2d_kde
+from pesummary.utils.bounded_1d_kde import bounded_1d_kde
+from pesummary.gw.plots.bounds import default_bounds
+from pesummary.gw.plots.bounds import default_bounds
 from peutils import *
 from makewaveform import make_waveform, simple_make_waveform
 from makealtair import make_altair_plots, get_params_intersect
@@ -175,15 +179,40 @@ with twodim:
     ch_param = [param1, param2]
     with lock:
         with st.spinner(text="Making triangle plot ..."):
-            fig = published_dict.plot(ch_param, type='reverse_triangle',
-                                    grid=False)
-        st.pyplot(fig[0])
+
+            xbounds = default_bounds[param1]
+            ybounds = default_bounds[param2]
+            fig, _, _, _ = published_dict.plot(ch_param, type="reverse_triangle", module="gw",
+                                        kde_2d=Bounded_2d_kde,
+                                        kde_k2d_kwargs={"xlow": xbounds.get("low", None),
+                                                        "xhigh": xbounds.get("high", None),
+                                                        "ylow": ybounds.get("low", None),
+                                                        "yhigh": ybounds.get("high", None)})
+            
+            #fig = published_dict.plot(ch_param, type='reverse_triangle', grid=False)
+            
+        st.pyplot(fig)
 
     for param in [param1, param2]:
         st.markdown("### {0}".format(param))
+
+        # -- Set plot parameters
+        bounds = default_bounds[param]
+        st.write(bounds)
+        st.write(bounds.get("high", None))
+        method = "Reflection"
+        if param == "chi_p":
+            method = "Transform"
+            
         with lock:
-            fig = published_dict.plot(param, type='hist', kde=True)                # -- pesummary v0.9.1
+            #fig = published_dict.plot(param, type='hist', kde=True)                # -- pesummary v0.9.1
             # fig = published_dict.plot(param, type='hist', kde=True, module='gw') #-- pesummary v 0.11.0
+            
+            fig = published_dict.plot(param, type="hist", kde=True,
+                               kde_kwargs={"kde_kernel": bounded_1d_kde, "method": "Reflection",
+                                           "xlow": bounds.get("low", None), "xhigh": bounds.get("high", None)})
+
+            
             st.pyplot(fig)
 
 with skymap:
