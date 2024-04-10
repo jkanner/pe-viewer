@@ -16,7 +16,6 @@ from gwosc import datasets
 from peutils import *
 import pesummary
 from peutils import *
-from pesummary.gw.plots.latex_labels import GWlatex_labels
 
 def get_params_intersect(sample_dict, chosenlist):
     allparams = set(sample_dict[chosenlist[0]].parameters)
