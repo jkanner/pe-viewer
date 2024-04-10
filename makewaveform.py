@@ -90,9 +90,7 @@ def make_waveform(event, datadict):
     # -- Get dictionary of samples, indexed by run
     samples_dict = pedata.samples_dict
 
-    # -- For now, hard code approxmiate to IMRPhenomXPHM
-    # aprx = 'IMRPhenomXPHM'
-
+    # Most likely aprx is: 'IMRPhenomXPHM'
     # -- Clean list of approximates
     aprxlist =  deepcopy(pedata.approximant)
 
