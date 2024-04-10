@@ -179,6 +179,7 @@ with twodim:
                                     grid=False)
         st.pyplot(fig[0])
 
+    # -- 1-D plots
     for param in [param1, param2]:
         st.markdown("### {0}".format(param))
         with lock:
@@ -186,6 +187,20 @@ with twodim:
             # fig = published_dict.plot(param, type='hist', kde=True, module='gw') #-- pesummary v 0.11.0
             st.pyplot(fig)
 
+    with st.expander("See code"):
+        st.write("""
+        ```
+        from pesummary.gw.fetch import fetch_open_samples
+        data = fetch_open_samples("GW150914", read_file=True, disable_prior=True)
+        samples = data.samples_dict
+        samples.plot(['mass_1', 'mass_2'], type='reverse_triangle', grid=False)
+        samples.plot(param, type='hist', kde=True) 
+        ```
+        """)
+
+        st.write("Or, see the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py).")
+
+            
 with skymap:
     make_skymap(chosenlist, datadict)
 

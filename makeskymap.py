@@ -38,5 +38,22 @@ def make_skymap(chosenlist, datadict):
                     st.markdown("Failed to generate skymap")
 
 
+        with st.expander('See code'):
+            st.write("""
+            First, download a [PE sample file](https://zenodo.org/api/files/ecf41927-9275-47da-8b37-e299693fe5cb/IGWN-GWTC2p1-v2-GW150914_095045_PEDataRelease_mixed_cosmo.h5).
+
+            Then:
+            """)
+            
+            st.write("""
+            ```
+            fn = 'IGWN-GWTC2p1-v2-GW150914_095045_PEDataRelease_mixed_cosmo.h5'
+            from pesummary.io import read
+            data = read(fn, diable_prior=True)
+            data.skymap["C01:IMRPhenomXPHM"].plot(contour=[50, 90])
+            ```
+            """)
+            st.write("Or, see [code for this app](https://github.com/jkanner/pe-viewer/blob/main/makeskymap.py)")
+
 def frmt_keyname(name):
     return "`" + name + "`"
