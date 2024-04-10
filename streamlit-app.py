@@ -209,7 +209,7 @@ with twodim:
             # fig = published_dict.plot(param, type='hist', kde=True, module='gw') #-- pesummary v 0.11.0
             
             fig = published_dict.plot(param, type="hist", kde=True,
-                               kde_kwargs={"kde_kernel": bounded_1d_kde, "method": "Reflection",
+                               kde_kwargs={"kde_kernel": bounded_1d_kde, "method": method,
                                            "xlow": bounds.get("low", None), "xhigh": bounds.get("high", None)})
 
             
