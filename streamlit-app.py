@@ -190,15 +190,19 @@ with twodim:
     with st.expander("See code"):
         st.write("""
         ```
-        from pesummary.gw.fetch import fetch_open_samples
-        data = fetch_open_samples("GW150914", read_file=True, disable_prior=True)
-        samples = data.samples_dict
+        from pesummary.io import read
+        filename = 'IGWN-GWTC2p1-v2-GW150914_095045_PEDataRelease_mixed_cosmo.h5'
+        data = read(filename, disable_prior=True)
+        samples = data.samples_dict['C01:IMRPhenomXPHM']
         samples.plot(['mass_1', 'mass_2'], type='reverse_triangle', grid=False)
-        samples.plot(param, type='hist', kde=True) 
         ```
         """)
 
-        st.write("Or, see the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py).")
+        st.write("""
+        For information:
+        * See the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py).
+        * See the [GWTC-3 Example Notebook](https://zenodo.org/records/8177023/preview/GWTC3p0PEDataReleaseExample.ipynb?include_deleted=0)
+        """)
 
             
 with skymap:
