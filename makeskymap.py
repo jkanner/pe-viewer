@@ -53,7 +53,13 @@ def make_skymap(chosenlist, datadict):
             data.skymap["C01:IMRPhenomXPHM"].plot(contour=[50, 90])
             ```
             """)
-            st.write("Or, see [code for this app](https://github.com/jkanner/pe-viewer/blob/main/makeskymap.py)")
+            
+            st.write("""
+            For more information:
+            * See the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py).
+            * See the [GWTC-3 Example Notebook](https://zenodo.org/records/8177023/preview/GWTC3p0PEDataReleaseExample.ipynb?include_deleted=0)
+        """)
+
 
 def frmt_keyname(name):
     return "`" + name + "`"

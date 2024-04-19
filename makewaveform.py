@@ -224,6 +224,30 @@ def make_waveform(event, datadict):
 
         st.altair_chart(chart1+chart2, use_container_width=True)
 
+    with st.expander("See the code"):
+        st.write("""
+        ```
+        from pesummary.io import read
+        import matplotlib.pyplot as plt
+        
+        filename = 'IGWN-GWTC2p1-v2-GW150914_095045_PEDataRelease_mixed_cosmo.h5'
+        data = read(filename, disable_prior=True)
+        samples = data.samples_dict['C01:IMRPhenomXPHM']
+        hp = samples.maxL_td_waveform('IMRPhenomXPHM',
+                              delta_t=1/4096,
+                              f_low=20,
+                              f_ref=20,
+                              project='L1')
+        plt.plot(hp.times, hp)
+        ```
+        """)
+
+        st.write("""
+        For more information:
+        * See the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py).
+        * See the [GWTC-3 Example Notebook](https://zenodo.org/records/8177023/preview/GWTC3p0PEDataReleaseExample.ipynb?include_deleted=0)
+        """)
+        
 def simple_make_waveform(name, datadict):
 
     # -- Special case for GW170817 and GW190425

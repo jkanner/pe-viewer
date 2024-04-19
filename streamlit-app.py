@@ -199,7 +199,7 @@ with twodim:
         """)
 
         st.write("""
-        For information:
+        For more information:
         * See the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py).
         * See the [GWTC-3 Example Notebook](https://zenodo.org/records/8177023/preview/GWTC3p0PEDataReleaseExample.ipynb?include_deleted=0)
         """)
