@@ -38,5 +38,27 @@ def make_skymap(chosenlist, datadict):
                     st.markdown("Failed to generate skymap")
 
 
+        with st.expander('See code'):
+            st.write("""First, download a posterior samples file from the
+            [GWTC-2.1](https://zenodo.org/records/6513631) or
+            [GWTC-3](https://zenodo.org/records/8177023) data release.  Then try this code:
+            """)
+
+            st.write("""
+            ```
+            fn = 'IGWN-GWTC2p1-v2-GW150914_095045_PEDataRelease_mixed_cosmo.h5'
+            from pesummary.io import read
+            data = read(fn, diable_prior=True)
+            data.skymap["C01:IMRPhenomXPHM"].plot(contour=[50, 90])
+            ```
+            """)
+            
+            st.write("""
+            For more information:
+            * See the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py)
+            * See the [GWTC-3 Example Notebook](https://zenodo.org/records/8177023/preview/GWTC3p0PEDataReleaseExample.ipynb?include_deleted=0)
+        """)
+
+
 def frmt_keyname(name):
     return "`" + name + "`"

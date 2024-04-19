@@ -179,6 +179,7 @@ with twodim:
                                     grid=False)
         st.pyplot(fig[0])
 
+    # -- 1-D plots
     for param in [param1, param2]:
         st.markdown("### {0}".format(param))
         with lock:
@@ -186,6 +187,29 @@ with twodim:
             # fig = published_dict.plot(param, type='hist', kde=True, module='gw') #-- pesummary v 0.11.0
             st.pyplot(fig)
 
+    with st.expander("See code"):
+        st.write("""First, download a posterior samples file from the
+        [GWTC-2.1](https://zenodo.org/records/6513631) or
+        [GWTC-3](https://zenodo.org/records/8177023) data release.  Then try this code:
+        """)
+
+        st.write("""
+        ```
+        from pesummary.io import read
+        filename = 'IGWN-GWTC2p1-v2-GW150914_095045_PEDataRelease_mixed_cosmo.h5'
+        data = read(filename, disable_prior=True)
+        samples = data.samples_dict['C01:IMRPhenomXPHM']
+        samples.plot(['mass_1', 'mass_2'], type='reverse_triangle', grid=False)
+        ```
+        """)
+
+        st.write("""
+        For more information:
+        * See the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py)
+        * See the [GWTC-3 Example Notebook](https://zenodo.org/records/8177023/preview/GWTC3p0PEDataReleaseExample.ipynb?include_deleted=0)
+        """)
+
+            
 with skymap:
     make_skymap(chosenlist, datadict)
 
