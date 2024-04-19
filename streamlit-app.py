@@ -188,6 +188,11 @@ with twodim:
             st.pyplot(fig)
 
     with st.expander("See code"):
+        st.write("""First, download a posterior samples file from the
+        [GWTC-2.1](https://zenodo.org/records/6513631) or
+        [GWTC-3](https://zenodo.org/records/8177023) data release.  Then try this code:
+        """)
+
         st.write("""
         ```
         from pesummary.io import read
@@ -200,7 +205,7 @@ with twodim:
 
         st.write("""
         For more information:
-        * See the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py).
+        * See the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py)
         * See the [GWTC-3 Example Notebook](https://zenodo.org/records/8177023/preview/GWTC3p0PEDataReleaseExample.ipynb?include_deleted=0)
         """)
 

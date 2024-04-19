@@ -39,12 +39,11 @@ def make_skymap(chosenlist, datadict):
 
 
         with st.expander('See code'):
-            st.write("""
-            First, download a [PE sample file](https://zenodo.org/api/files/ecf41927-9275-47da-8b37-e299693fe5cb/IGWN-GWTC2p1-v2-GW150914_095045_PEDataRelease_mixed_cosmo.h5).
-
-            Then:
+            st.write("""First, download a posterior samples file from the
+            [GWTC-2.1](https://zenodo.org/records/6513631) or
+            [GWTC-3](https://zenodo.org/records/8177023) data release.  Then try this code:
             """)
-            
+
             st.write("""
             ```
             fn = 'IGWN-GWTC2p1-v2-GW150914_095045_PEDataRelease_mixed_cosmo.h5'
@@ -56,7 +55,7 @@ def make_skymap(chosenlist, datadict):
             
             st.write("""
             For more information:
-            * See the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py).
+            * See the [code for this app](https://github.com/jkanner/pe-viewer/blob/main/streamlit-app.py)
             * See the [GWTC-3 Example Notebook](https://zenodo.org/records/8177023/preview/GWTC3p0PEDataReleaseExample.ipynb?include_deleted=0)
         """)
 
