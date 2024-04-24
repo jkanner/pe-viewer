@@ -1,6 +1,10 @@
 import streamlit as st
 import pesummary
 from pesummary.io import read
+from pesummary.utils.bounded_2d_kde import Bounded_2d_kde
+from pesummary.utils.bounded_1d_kde import bounded_1d_kde
+from pesummary.gw.plots.bounds import default_bounds
+from pesummary.gw.plots.bounds import default_bounds
 from peutils import *
 from makewaveform import make_waveform, simple_make_waveform
 from makealtair import make_altair_plots, get_params_intersect
@@ -71,11 +75,11 @@ chosenlist = get_event_list()
 # --
 # Display page tab structure
 # --
-about, twodim, skymap, onedim, waveform, config  = st.tabs([
+about, skymap, onedim, twodim, waveform, config  = st.tabs([
     'About',
-    '2-D Plots',
     'Skymaps',
     'All Parameters',
+    'Select Parameters',
     'Waveform',
     'Config'
 ])
@@ -139,6 +143,13 @@ published_dict = st.session_state['published_dict']
 # --------------
 # Display plots
 # --------------
+
+with skymap:
+    make_skymap(chosenlist, datadict)
+
+with onedim:    
+    make_altair_plots(chosenlist, published_dict)
+
 with twodim:
     st.markdown("""
         * These 2-D plots can reveal correlations between parameters.  
@@ -175,16 +186,37 @@ with twodim:
     ch_param = [param1, param2]
     with lock:
         with st.spinner(text="Making triangle plot ..."):
-            fig = published_dict.plot(ch_param, type='reverse_triangle',
-                                    grid=False)
-        st.pyplot(fig[0])
+
+            xbounds = default_bounds[param1]
+            ybounds = default_bounds[param2]
+            fig, _, _, _ = published_dict.plot(ch_param, type="reverse_triangle", module="gw",
+                                        kde_2d=Bounded_2d_kde,
+                                        kde_k2d_kwargs={"xlow": xbounds.get("low", None),
+                                                        "xhigh": xbounds.get("high", None),
+                                                        "ylow": ybounds.get("low", None),
+                                                        "yhigh": ybounds.get("high", None)})
+            
+        #fig = published_dict.plot(ch_param, type='reverse_triangle', grid=False)    
+        st.pyplot(fig)
 
     # -- 1-D plots
     for param in [param1, param2]:
         st.markdown("### {0}".format(param))
+
+        # -- Set plot parameters
+        bounds = default_bounds[param]
+        method = "Reflection"
+        if param == "chi_p":
+            method = "Transform"
+            
         with lock:
-            fig = published_dict.plot(param, type='hist', kde=True)                # -- pesummary v0.9.1
-            # fig = published_dict.plot(param, type='hist', kde=True, module='gw') #-- pesummary v 0.11.0
+            try:
+                fig = published_dict.plot(param, type="hist", kde=True,
+                               kde_kwargs={"kde_kernel": bounded_1d_kde, "method": method,
+                                           "xlow": bounds.get("low", None), "xhigh": bounds.get("high", None)})
+            except:
+                fig = published_dict.plot(param, type='hist', kde=True)               
+            
             st.pyplot(fig)
 
     with st.expander("See code"):
@@ -210,12 +242,6 @@ with twodim:
         """)
 
             
-with skymap:
-    make_skymap(chosenlist, datadict)
-
-with onedim:    
-    make_altair_plots(chosenlist, published_dict)
-
 with waveform:
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
     st.markdown("This app only creates waveforms for one event (Event 1) to reduce run time.")
