@@ -75,11 +75,11 @@ chosenlist = get_event_list()
 # --
 # Display page tab structure
 # --
-about, twodim, skymap, onedim, waveform, config  = st.tabs([
+about, skymap, onedim, twodim, waveform, config  = st.tabs([
     'About',
-    '2-D Plots',
     'Skymaps',
     'All Parameters',
+    'Select Parameters',
     'Waveform',
     'Config'
 ])
@@ -143,6 +143,13 @@ published_dict = st.session_state['published_dict']
 # --------------
 # Display plots
 # --------------
+
+with skymap:
+    make_skymap(chosenlist, datadict)
+
+with onedim:    
+    make_altair_plots(chosenlist, published_dict)
+
 with twodim:
     st.markdown("""
         * These 2-D plots can reveal correlations between parameters.  
@@ -235,12 +242,6 @@ with twodim:
         """)
 
             
-with skymap:
-    make_skymap(chosenlist, datadict)
-
-with onedim:    
-    make_altair_plots(chosenlist, published_dict)
-
 with waveform:
     st.markdown("### Making waveform for Event 1: {0}".format(ev1))
     st.markdown("This app only creates waveforms for one event (Event 1) to reduce run time.")
