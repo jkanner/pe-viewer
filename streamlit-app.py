@@ -189,8 +189,7 @@ with twodim:
                                                         "ylow": ybounds.get("low", None),
                                                         "yhigh": ybounds.get("high", None)})
             
-            #fig = published_dict.plot(ch_param, type='reverse_triangle', grid=False)
-            
+        #fig = published_dict.plot(ch_param, type='reverse_triangle', grid=False)    
         st.pyplot(fig)
 
     # -- 1-D plots
@@ -199,20 +198,17 @@ with twodim:
 
         # -- Set plot parameters
         bounds = default_bounds[param]
-        st.write(bounds)
-        st.write(bounds.get("high", None))
         method = "Reflection"
         if param == "chi_p":
             method = "Transform"
             
         with lock:
-            #fig = published_dict.plot(param, type='hist', kde=True)                # -- pesummary v0.9.1
-            # fig = published_dict.plot(param, type='hist', kde=True, module='gw') #-- pesummary v 0.11.0
-            
-            fig = published_dict.plot(param, type="hist", kde=True,
+            try:
+                fig = published_dict.plot(param, type="hist", kde=True,
                                kde_kwargs={"kde_kernel": bounded_1d_kde, "method": method,
                                            "xlow": bounds.get("low", None), "xhigh": bounds.get("high", None)})
-
+            except:
+                fig = published_dict.plot(param, type='hist', kde=True)               
             
             st.pyplot(fig)
 
