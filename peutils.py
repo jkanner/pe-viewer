@@ -135,8 +135,10 @@ ALL_PARAM = ['a_1', 'a_2', 'chi_eff', 'chi_p', 'chirp_mass',
 
 # -- Load strain data
 @st.cache_data(max_entries=6)   #-- Magic command to cache data
-def load_strain(t0, detector):
+def load_strain(t0, detector, fs=None):
     straindata = TimeSeries.fetch_open_data(detector, t0-14, t0+14, cache=False)
+    if fs:
+        straindata = straindata.resample(fs)
     return straindata
 
 

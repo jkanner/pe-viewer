@@ -106,6 +106,18 @@ def make_waveform(event, datadict):
     indx = list(samples_dict.keys())[indx_num]
     st.text('Waveform Family: {0}'.format(aprx))
     st.text('Using samples for {0}'.format(indx))
+
+    # -- Try reading psd from data
+    psd = pedata.psd[indx]
+    st.write(psd)
+
+    # -- Try to get highest freq value in PSD
+    for ifo, this_psd in psd.items():
+        maxfreq = this_psd[-1][0]
+        maxfreq = int(maxfreq)
+        st.write('maxfreq', maxfreq)
+        break
+    
     
     # -- Get a single run
     posterior_samples = samples_dict[indx]
@@ -180,21 +192,39 @@ def make_waveform(event, datadict):
 
     st.markdown("## Project waveform onto each detector")
     st.markdown("Whitened and band-passed detector data in gray, with projected waveform in orange.")
-    
+
     # -- Band-pass controls
-    freqrange = st.slider('Band-pass frequency range (Hz)', min_value=10, max_value=2000, value=(30,400), key=event)
+    upper = int(0.8*maxfreq)
+    freqrange = st.slider('Band-pass frequency range (Hz)', min_value=10, max_value=upper, value=(30, upper), key=event)
+
     
     for ifo in detectorlist:
+
+        # -- Get ASD
+        zippedpsd = psd[ifo]
+        psdfreq, psdvalue = zip(*zippedpsd)
+        gwpypsd = gwpy.frequencyseries.FrequencySeries(
+            psdvalue,
+            frequencies = psdfreq,
+            )
+
+        testfs = int(np.round(psdfreq[-1]))
+        st.write("testfs", testfs)
+        
+        st.write(gwpypsd)
+
         
         st.markdown("### {0}".format(ifo))
 
         # -- Get strain data
         straindata = load_strain(t0, ifo)
         strain = deepcopy(straindata)
-        asd = strain.asd()
+        #asd = strain.asd()
+        asd = np.sqrt(gwpypsd)
 
         # -- Whiten, bandpass, and crop
         white_data = strain.whiten(asd=asd)
+        st.write(1.0/white_data.dt)
         bp_data = white_data.bandpass(freqrange[0], freqrange[1])
         bp_cropped = bp_data.crop(cropstart, cropend)
         
