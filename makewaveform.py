@@ -45,16 +45,8 @@ def make_audio_file(bp_data, t0=None, lowpass=False):
     virtualfile = io.BytesIO()    
     wavfile.write(virtualfile, int(fs), win_data)
     return virtualfile
-        
-    chart = alt.Chart(source).mark_line().encode(
-        alt.X('Freq (Hz)'),
-        alt.Y('Value:Q', scale=alt.Scale(type="log"))
-    )
-    st.altair_chart(chart, use_container_width=True)
-    return(chart)
 
 
-    
 # -- Plotting helper function
 def plot_signal(signal, color_num=0, display=True):
     source = pd.DataFrame({
