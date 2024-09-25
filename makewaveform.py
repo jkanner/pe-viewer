@@ -45,13 +45,6 @@ def make_audio_file(bp_data, t0=None, lowpass=False):
     virtualfile = io.BytesIO()    
     wavfile.write(virtualfile, int(fs), win_data)
     return virtualfile
-
-# -- Plot ASDs / PSDs
-def plot_freq(freq, value):
-    source = pd.DataFrame({
-        'Freq (Hz)': freq,
-        'Value': value
-    })
         
     chart = alt.Chart(source).mark_line().encode(
         alt.X('Freq (Hz)'),
