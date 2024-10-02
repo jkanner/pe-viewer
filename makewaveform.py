@@ -201,7 +201,7 @@ def make_waveform(event, datadict):
         # -- Extrapolate PSD to match data sampling rate
         fs = int(strain.sample_rate.value)
         duration = len(strain) * strain.dt.value
-        target_frequencies = np.linspace(0, fs / 2, int(duration * fs / 2))
+        target_frequencies = np.linspace(0, fs / 2, int(duration * fs / 2), endpoint=False)
         asdsquare = gwpy.frequencyseries.FrequencySeries(
             interp1d(psdfreq, psdvalue, bounds_error=False, fill_value=np.inf)(target_frequencies),
             frequencies=target_frequencies,
