@@ -16,6 +16,7 @@ from gwosc import datasets
 from gwosc.api import fetch_event_json
 from peutils import *
 
+from scipy.interpolate import interp1d
 
 # -- Try download for waveform data
 def get_download_link(signal, filename='waveform.csv'):
@@ -188,17 +189,29 @@ def make_waveform(event, datadict):
         
         st.markdown("### {0}".format(ifo))
 
-        # -- Get strain data
+        # -- Get PSD from PE samples
+        psd = pedata.psd[indx]
+        zippedpsd = psd[ifo]
+        psdfreq, psdvalue = zip(*zippedpsd)
+                
+        # -- Get strain data from GWOSC archive
         straindata = load_strain(t0, ifo)
         strain = deepcopy(straindata)
-        asd = strain.asd()
+
+        # -- Extrapolate PSD to match data sampling rate
+        fs = int(strain.sample_rate.value)
+        duration = len(strain) * strain.dt.value
+        target_frequencies = np.linspace(0, fs / 2, int(duration * fs / 2), endpoint=False)
+        asdsquare = gwpy.frequencyseries.FrequencySeries(
+            interp1d(psdfreq, psdvalue, bounds_error=False, fill_value=np.inf)(target_frequencies),
+            frequencies=target_frequencies,
+        )        
+        asd = np.sqrt(asdsquare)
 
         # -- Whiten, bandpass, and crop
         white_data = strain.whiten(asd=asd)
         bp_data = white_data.bandpass(freqrange[0], freqrange[1])
         bp_cropped = bp_data.crop(cropstart, cropend)
-        
-        # plot_white_signal(bp_cropped)
         
         # -- Project waveform onto detector
         hp = posterior_samples.maxL_td_waveform(aprx,
