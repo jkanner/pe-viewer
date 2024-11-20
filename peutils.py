@@ -96,8 +96,7 @@ def load_samples(event, gwtc=True):
             samples = read(tfile.name, path_to_samples="IMRPhenomPv2NRT_lowSpin_posterior", disable_prior=True)
         else:
             samples = read(tfile.name, disable_prior=True)
-
-    try: 
+    try:
         samples.downsample(2000)
     except:
         pass
