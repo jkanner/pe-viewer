@@ -250,8 +250,10 @@ with waveform:
         make_waveform(ev1, datadict)
     except:
         st.write("Unable to generate maximum likelihood waveform.  Making approximate waveform instead.")
-        simple_make_waveform(ev1, datadict)
-    
+        try:
+            simple_make_waveform(ev1, datadict)
+        except:
+            st.write("Unable to generate waveform")
 
 
     

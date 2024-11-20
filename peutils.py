@@ -97,7 +97,7 @@ def load_samples(event, gwtc=True):
         else:
             samples = read(tfile.name, disable_prior=True)
 
-    try: 
+    try:
         samples.downsample(2000)
     except:
         pass
