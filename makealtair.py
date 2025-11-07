@@ -19,6 +19,7 @@ from peutils import *
 
 def get_params_intersect(sample_dict, chosenlist):
     allparams = set(sample_dict[chosenlist[0]].parameters)
+    st.text(allparams) # DEBUGGING
     for event in sample_dict.keys():
         thisparam = set(sample_dict[event].parameters)
         allparams = allparams.intersection(thisparam)

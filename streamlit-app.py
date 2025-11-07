@@ -180,7 +180,9 @@ with twodim:
         param1 = st.selectbox( 'Parameter 1', params, index=indx1 )
         param2 = st.selectbox( 'Parameter 2', params, index=indx2 )
         st.form_submit_button('Update plots')
-
+        st.text(param1)
+        st.text(published_dict)
+        
     # -- Make plot based on selected parameters
     st.markdown("### Triangle plot")
     ch_param = [param1, param2]
