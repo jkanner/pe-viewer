@@ -33,7 +33,7 @@ st.markdown("""Make plots of waveforms, source parameters, and skymaps for gravi
 st.image('img/black-hole-ellipse.png')
 
 # -- Query GWOSC for GWTC events
-eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
+eventlist = get_eventlist(catalog=['GWTC-4.0', 'GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
                           optional=False)
 
 # -- 2nd and 3rd events are optional, so include "None" option
