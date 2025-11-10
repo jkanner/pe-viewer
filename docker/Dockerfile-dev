@@ -1,4 +1,4 @@
-FROM python:3.9
+FROM python:3.11
 
 COPY requirements.txt /tmp
 RUN apt-get update && apt-get full-upgrade -y

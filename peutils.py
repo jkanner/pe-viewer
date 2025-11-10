@@ -25,8 +25,9 @@ import pesummary.utils.samples_dict
 import matplotlib as mpl
 mpl.use("agg")
 
-from matplotlib.backends.backend_agg import RendererAgg
-lock = RendererAgg.lock
+import threading
+lock = threading.RLock()
+
 
 
 # -- Query for eventlist
