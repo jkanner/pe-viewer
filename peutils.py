@@ -59,9 +59,20 @@ def format_data(chosenlist, datadict):
         try:
             #-- This key should be the preferred samples for GWTC-2.1 and GWTC-3
             sample_dict[chosen] = samples.samples_dict[waveform]
+            continue
         except:
-            #-- GWTC-1
-            sample_dict[chosen] = samples.samples_dict
+            pass
+
+        try:
+            # KLUDGE for GWTC-4.0
+            sample_dict[chosen] = samples.samples_dict['C00:'+waveform]
+            continue
+        except:
+            pass
+        
+        #-- GWTC-1
+        sample_dict[chosen] = samples.samples_dict
+        
     published_dict = pesummary.utils.samples_dict.MultiAnalysisSamplesDict( sample_dict )
     return published_dict
 
