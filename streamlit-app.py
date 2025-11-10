@@ -56,7 +56,15 @@ def update_pe():
     chosenlist = get_event_list()
     # -- Load all PE samples into datadict 
     with st.spinner(text="Loading data ..."):
-        st.session_state['datadict'] = make_datadict(chosenlist)    
+        try:
+            st.session_state['datadict'] = make_datadict(chosenlist)
+        except:
+            st.markdown("Events: {0}".format(chosenlist))
+            st.markdown("Missing PE samples for one of these events")
+            if st.button("Reload page"):
+                st.rerun()
+            st.error("Failed to load posterior samples for these events. Try reloading the app, and report an issue if needed.")
+            st.stop()
     # -- Load the published PE samples into a pesummary object
     with st.spinner(text="Formatting data ..."):
         st.session_state['published_dict'] = format_data(chosenlist, st.session_state['datadict'])  
