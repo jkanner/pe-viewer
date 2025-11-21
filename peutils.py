@@ -103,7 +103,6 @@ def load_samples(event, gwtc=True):
         pass
     return samples
 
-
 def stockcache(eventlist):
     total = len(eventlist)
     st.write("## Intializing  cache.  This may take several hours")
@@ -111,8 +110,10 @@ def stockcache(eventlist):
     for count, ev in enumerate(eventlist):
         cachebar.progress(count/total)
         with st.spinner(text="Downloading data for {0} ({1} / {2})".format(ev, count, total)):
-            load_samples(ev)
-
+            try:
+                load_samples(ev)
+            except:
+                continue
 
 ALL_PARAM = ['a_1', 'a_2', 'chi_eff', 'chi_p', 'chirp_mass',
           'chirp_mass_source', 'comoving_distance', 'cos_iota',
@@ -194,5 +195,11 @@ if __name__ == '__main__':
     samples = load_samples('GW200225_060421', gwtc=True)
     print(samples)
 
-
-
+def check_buildcache(eventlist):
+    getparam = st.query_params
+    if 'buildcache' in getparam:
+        try:
+            stockcache(eventlist)
+        except:
+            pass
+    return 0
