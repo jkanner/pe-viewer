@@ -5,9 +5,8 @@ import matplotlib
 matplotlib.use('Agg')
 matplotlib.rcParams['text.usetex'] = False
 
-from matplotlib.backends.backend_agg import RendererAgg
-lock = RendererAgg.lock
-
+import threading
+lock = threading.RLock()
 
 def make_skymap(chosenlist, datadict):
     aprx_dict = {}

@@ -15,8 +15,8 @@ import glob, os
 import matplotlib
 matplotlib.use('Agg')
 
-from matplotlib.backends.backend_agg import RendererAgg
-lock = RendererAgg.lock
+import threading
+lock = threading.RLock()
 
 st.set_page_config(layout="centered",
                    page_title="GW Event Viewer",
