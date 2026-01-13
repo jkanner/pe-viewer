@@ -33,7 +33,7 @@ st.markdown("""Make plots of waveforms, source parameters, and skymaps for gravi
 st.image('img/black-hole-ellipse.png')
 
 # -- Query GWOSC for GWTC events
-eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
+eventlist = get_eventlist(catalog=['GWTC-4.0', 'GWTC-3-confident', 'GWTC-2.1-confident', 'GWTC-1-confident'],
                           optional=False)
 
 # -- 2nd and 3rd events are optional, so include "None" option
@@ -57,7 +57,15 @@ def update_pe():
     chosenlist = get_event_list()
     # -- Load all PE samples into datadict 
     with st.spinner(text="Loading data ..."):
-        st.session_state['datadict'] = make_datadict(chosenlist)    
+        try:
+            st.session_state['datadict'] = make_datadict(chosenlist)
+        except:
+            st.markdown("Events: {0}".format(chosenlist))
+            st.markdown("Missing PE samples for one of these events")
+            if st.button("Reload page"):
+                st.rerun()
+            st.error("Failed to load posterior samples for these events. Try reloading the app, and report an issue if needed.")
+            st.stop()
     # -- Load the published PE samples into a pesummary object
     with st.spinner(text="Formatting data ..."):
         st.session_state['published_dict'] = format_data(chosenlist, st.session_state['datadict'])  
@@ -194,7 +202,7 @@ with twodim:
         param1 = st.selectbox( 'Parameter 1', params, index=indx1 )
         param2 = st.selectbox( 'Parameter 2', params, index=indx2 )
         st.form_submit_button('Update plots')
-
+        
     # -- Make plot based on selected parameters
     st.markdown("### Triangle plot")
     ch_param = [param1, param2]
