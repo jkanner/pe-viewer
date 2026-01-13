@@ -92,14 +92,14 @@ def make_datadict(chosenlist):
 def load_samples(event, gwtc=True):
     if gwtc:
         url, waveform = get_pe_url(event)
-
-    try: 
+        
+    if event != 'GW170817':
         r = requests.get(url)
         tfile = tempfile.NamedTemporaryFile(suffix='.h5')
         tfile.write(r.content)
         samples = read(tfile.name, disable_prior=True)
-        
-    except:
+    else:
+        # Use GWTC-1 samples for only GW170817
         url = 'https://dcc.ligo.org/public/0157/P1800370/005/{0}_GWTC-1.hdf5'.format(event)
         r = requests.get(url)
         tfile = tempfile.NamedTemporaryFile(suffix='.h5')
