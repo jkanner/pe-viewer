@@ -92,7 +92,6 @@ def make_datadict(chosenlist):
 def load_samples(event, gwtc=True):
     if gwtc:
         url, waveform = get_pe_url(event)
-        st.text(url)
         
     if event != 'GW170817':
         r = requests.get(url)
