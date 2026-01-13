@@ -40,8 +40,9 @@ eventlist = get_eventlist(catalog=['GWTC-3-confident', 'GWTC-2.1-confident', 'GW
 eventlist2 = deepcopy(eventlist)
 eventlist2.insert(0,None)  
 
-# -- Check for any get params
+# -- Check for any GET paramameters
 startindex1, startindex2, startindex3 = get_getparams(eventlist,eventlist2)
+dummy = check_buildcache(eventlist)
 
 # -- Helper method to get list of events
 def get_event_list():
@@ -75,12 +76,12 @@ chosenlist = get_event_list()
 # --
 # Display page tab structure
 # --
-about, skymap, onedim, twodim, waveform, config  = st.tabs([
+about, skymap, onedim, waveform, twodim, config  = st.tabs([
     'About',
     'Skymaps',
     'All Parameters',
-    'Select Parameters',
     'Waveform',
+    'Select Parameters',
     'Config'
 ])
 
@@ -150,6 +151,19 @@ with skymap:
 with onedim:    
     make_altair_plots(chosenlist, published_dict)
 
+with waveform:
+    st.markdown("### Making waveform for Event 1: {0}".format(ev1))
+    st.markdown("This app only creates waveforms for one event (Event 1) to reduce run time.")
+    
+    try:
+        make_waveform(ev1, datadict)
+    except:
+        st.write("Unable to generate maximum likelihood waveform.  Making approximate waveform instead.")
+        try:
+            simple_make_waveform(ev1, datadict)
+        except:
+            st.write("Unable to generate waveform")
+    
 with twodim:
     st.markdown("""
         * These 2-D plots can reveal correlations between parameters.  
@@ -242,18 +256,6 @@ with twodim:
         """)
 
             
-with waveform:
-    st.markdown("### Making waveform for Event 1: {0}".format(ev1))
-    st.markdown("This app only creates waveforms for one event (Event 1) to reduce run time.")
-    
-    try:
-        make_waveform(ev1, datadict)
-    except:
-        st.write("Unable to generate maximum likelihood waveform.  Making approximate waveform instead.")
-        try:
-            simple_make_waveform(ev1, datadict)
-        except:
-            st.write("Unable to generate waveform")
 
 
     
