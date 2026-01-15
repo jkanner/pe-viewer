@@ -50,12 +50,13 @@ def get_eventlist(catalog=None, optional=False):
     return eventlist
 
 # -- Assemble samples into sample dictionary
-#@st.cache(max_entries=5, suppress_st_warning=True)
+#@st.cache(max_entries=3, suppress_st_warning=True)
 def format_data(chosenlist, datadict):
     sample_dict = {}
     for i,chosen in enumerate(chosenlist, 1):
         if chosen is None: continue
         samples = datadict[chosen]
+        st.text('returned samples to formatter')
         url, waveform = get_pe_url(chosen)
         try:
             #-- This key should be the preferred samples for GWTC-2.1 and GWTC-3
@@ -94,10 +95,19 @@ def load_samples(event, gwtc=True):
         url, waveform = get_pe_url(event)
         
     if event != 'GW170817':
+        st.text(url)
+        st.text('Downloading ...')
         r = requests.get(url)
+        st.text('Write temp file ...')
         tfile = tempfile.NamedTemporaryFile(suffix='.h5')
         tfile.write(r.content)
+        
+        st.text(r.content)
+
+        st.text('Read temp file ...')
         samples = read(tfile.name, disable_prior=True)
+        st.text('Got samples.')
+        
     else:
         # Use GWTC-1 samples for only GW170817
         url = 'https://dcc.ligo.org/public/0157/P1800370/005/{0}_GWTC-1.hdf5'.format(event)
@@ -113,6 +123,9 @@ def load_samples(event, gwtc=True):
         samples.downsample(2000)
     except:
         pass
+
+    st.text('returning samples')
+    st.text(type(samples))
     return samples
 
 def stockcache(eventlist):
