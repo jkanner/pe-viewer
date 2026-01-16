@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
+import requests_pelican as rp
 
 import requests, os, io, json
 import tempfile
@@ -18,7 +19,6 @@ import pesummary
 from pesummary.io import read
 import pesummary.utils.samples_dict
 
-
 # Use the non-interactive Agg backend, which is recommended as a
 # thread-safe backend.
 # See https://matplotlib.org/3.3.2/faq/howto_faq.html#working-with-threads.
@@ -28,7 +28,14 @@ mpl.use("agg")
 import threading
 lock = threading.RLock()
 
-
+# -- Set pelican parameters
+pelicandict = {
+    'GWTC-4.0': (2025,17014085),
+    'GWTC-3-confident': (2023, 8177023),
+    'GWTC-2.1-confident': (2022, 6513631),
+    'GWTC-1-confident': (000, 000)
+    }
+pelicanroot = 'osdf:///gwdata/zenodo/ligo-virgo-kagra'
 
 # -- Query for eventlist
 @st.cache_data
@@ -42,7 +49,8 @@ def get_eventlist(catalog=None, optional=False):
 
     for event_id, info in gwtc['events'].items():
         if info['catalog.shortName'] in catalog:
-            eventlist.append(info['commonName'])
+            if info['mass_1_source'] != None:
+                eventlist.append(info['commonName'])
         
     eventlist.sort()
     if optional:
@@ -56,7 +64,7 @@ def format_data(chosenlist, datadict):
     for i,chosen in enumerate(chosenlist, 1):
         if chosen is None: continue
         samples = datadict[chosen]
-        url, waveform = get_pe_url(chosen)
+        url, waveform, catalog = get_pe_url(chosen)
         try:
             #-- This key should be the preferred samples for GWTC-2.1 and GWTC-3
             sample_dict[chosen] = samples.samples_dict[waveform]
@@ -77,26 +85,33 @@ def format_data(chosenlist, datadict):
     published_dict = pesummary.utils.samples_dict.MultiAnalysisSamplesDict( sample_dict )
     return published_dict
 
-
 # -- Create dictionary of samples
 #@st.cache(max_entries=5, suppress_st_warning=True)
 def make_datadict(chosenlist):
     datadict = {}
     for ev in chosenlist:
         with st.spinner(text="Downloading data for {0} ...".format(ev)):
-            datadict[ev] = load_samples(ev)
+            datadict[ev] = load_samples_pelican(ev)
     return datadict
 
-# -- Load PE samples from web
+# -- Load PE samples from pelican
 @st.cache_data(max_entries=1, show_spinner=False, persist=True)
-def load_samples(event, gwtc=True):
+def load_samples_pelican(event, gwtc=True):
     if gwtc:
-        url, waveform = get_pe_url(event)
+        url, waveform, catalog = get_pe_url(event)
+        spl = url.split('/')
+        if spl[-1] == 'content':
+            fn = spl[-2]
+        else:
+            fn = spl[-1]
+
+    # -- Construct Pelican ID
+    yr, zenid = pelicandict[catalog]
+    pelicanurl = os.path.join(pelicanroot, str(yr), str(zenid), fn)
         
     if event != 'GW170817':
-        r = requests.get(url)
         tfile = tempfile.NamedTemporaryFile(suffix='.h5')
-        tfile.write(r.content)
+        tfile.write(rp.get(pelicanurl).content)
         samples = read(tfile.name, disable_prior=True)
     else:
         # Use GWTC-1 samples for only GW170817
@@ -123,7 +138,7 @@ def stockcache(eventlist):
         cachebar.progress(count/total)
         with st.spinner(text="Downloading data for {0} ({1} / {2})".format(ev, count, total)):
             try:
-                load_samples(ev)
+                load_samples_pelican(ev)
             except:
                 continue
 
@@ -170,13 +185,13 @@ def get_pe_url(event):
             if meta['catalog.shortName'] == 'GWTC-1-confident':
                 for peset, peinfo in meta['parameters'].items():
                     if 'R2_pe_combined' in peset:
-                        return peinfo['data_url'], peinfo['waveform_family']
+                        return peinfo['data_url'], peinfo['waveform_family'], meta['catalog.shortName']
 
 
             # -- Find PE data URL for all other events
             for peset, peinfo in eventinfo['events'][event_id]['parameters'].items():
                 if peinfo['is_preferred'] and (peinfo['pipeline_type'] == 'pe'):
-                    return peinfo['data_url'], peinfo['waveform_family']
+                    return peinfo['data_url'], peinfo['waveform_family'], meta['catalog.shortName']
 
 
 # -- Set the default event choice index to any events in the GET request
