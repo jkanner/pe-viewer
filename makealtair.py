@@ -39,7 +39,7 @@ def make_altair_plots(chosenlist, sample_dict):
     
     for ev in chosenlist:
         if ev is None: continue
-        peurl, namekey = get_pe_url(ev)
+        peurl, namekey, catalog = get_pe_url(ev)
         weburl = 'https://gwosc.org/eventapi/html/GWTC/#:~:text={0}'.format(ev)
         
         st.markdown('#### {0}'.format(ev))
