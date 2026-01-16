@@ -28,7 +28,6 @@ mpl.use("agg")
 import threading
 lock = threading.RLock()
 
-
 # -- Set pelican parameters
 pelicandict = {
     'GWTC-4.0': (2025,17014085),
@@ -37,7 +36,6 @@ pelicandict = {
     'GWTC-1-confident': (000, 000)
     }
 pelicanroot = 'osdf:///gwdata/zenodo/ligo-virgo-kagra'
-
 
 # -- Query for eventlist
 @st.cache_data
@@ -87,7 +85,6 @@ def format_data(chosenlist, datadict):
     published_dict = pesummary.utils.samples_dict.MultiAnalysisSamplesDict( sample_dict )
     return published_dict
 
-
 # -- Create dictionary of samples
 #@st.cache(max_entries=5, suppress_st_warning=True)
 def make_datadict(chosenlist):
@@ -115,35 +112,6 @@ def load_samples_pelican(event, gwtc=True):
     if event != 'GW170817':
         tfile = tempfile.NamedTemporaryFile(suffix='.h5')
         tfile.write(rp.get(pelicanurl).content)
-        samples = read(tfile.name, disable_prior=True)
-    else:
-        # Use GWTC-1 samples for only GW170817
-        url = 'https://dcc.ligo.org/public/0157/P1800370/005/{0}_GWTC-1.hdf5'.format(event)
-        r = requests.get(url)
-        tfile = tempfile.NamedTemporaryFile(suffix='.h5')
-        tfile.write(r.content)
-        if event == 'GW170817':
-            samples = read(tfile.name, path_to_samples="IMRPhenomPv2NRT_lowSpin_posterior", disable_prior=True)
-        else:
-            samples = read(tfile.name, disable_prior=True)
-
-    try:
-        samples.downsample(2000)
-    except:
-        pass
-    return samples
-
-
-# -- Load PE samples from web (no longer in use)
-@st.cache_data(max_entries=1, show_spinner=False, persist=True)
-def load_samples(event, gwtc=True):
-    if gwtc:
-        url, waveform, catalog = get_pe_url(event)
-        
-    if event != 'GW170817':
-        r = requests.get(url)
-        tfile = tempfile.NamedTemporaryFile(suffix='.h5')
-        tfile.write(r.content)
         samples = read(tfile.name, disable_prior=True)
     else:
         # Use GWTC-1 samples for only GW170817
