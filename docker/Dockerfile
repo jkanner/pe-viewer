@@ -10,8 +10,9 @@ RUN  useradd -s /usr/sbin/nologin -m -d /app peviewer
 USER peviewer
 WORKDIR /app
 RUN mkdir -p .streamlit/cache/
-COPY --chown=peviewer *.py README.md /app/
-COPY --chown=peviewer img/* /app/img/
+
+COPY --chown=peviewer pe-viewer/ /app/
+COPY --chown=peviewer README.md /app/
 
 # uncomment these to brand the timestamp of the build in the back-hole-ellipse image
 #COPY docker/brand-image.py /tmp
@@ -19,6 +20,5 @@ COPY --chown=peviewer img/* /app/img/
 RUN printf "\n\nBuild on $(date)\n" >> /app/README.md
 
 EXPOSE 8501
-
 
 CMD [ "/usr/local/bin/streamlit", "run", "streamlit-app.py" ]
