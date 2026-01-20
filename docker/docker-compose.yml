@@ -1,0 +1,9 @@
+services:
+  peviewer:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    environment:
+      STREAMLIT_SERVER_FILE_WATCHER_TYPE: poll
+    ports:
+      - "8501:8501"
