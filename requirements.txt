@@ -9,3 +9,4 @@ ligo.skymap
 matplotlib==3.8.4
 altair==5.5.0
 pandas==2.3.3
+requests-pelican==0.2.0

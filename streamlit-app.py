@@ -61,7 +61,6 @@ def update_pe():
             st.session_state['datadict'] = make_datadict(chosenlist)
         except:
             st.markdown("Events: {0}".format(chosenlist))
-            st.markdown("Missing PE samples for one of these events")
             if st.button("Reload page"):
                 st.rerun()
             st.error("Failed to load posterior samples for these events. Try reloading the app, and report an issue if needed.")
@@ -180,7 +179,7 @@ with twodim:
     st.markdown("### Making plots for events:")
     for ev in chosenlist:
         if ev is None: continue
-        peurl, namekey = get_pe_url(ev)
+        peurl, namekey, catalog = get_pe_url(ev)
         weburl = 'https://gwosc.org/eventapi/html/GWTC/#:~:text={0}'.format(ev)
         st.markdown('#### {0}'.format(ev))
         st.markdown('[ ⬇️ Samples]({0}) | [ 🔗 Catalog]({1})'.format(peurl, weburl))
