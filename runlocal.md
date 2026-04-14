@@ -1,38 +1,51 @@
 ## Running on a local computer
 
-This app can be run inside a docker container. You can build your own
-container, or download one from the git repo.
+The easiest way to run this app locally is with **Docker Compose** from the root of the repository (where `docker-compose.yml` lives).
 
-### Build a docker container
+### Build images to run locally for development and production
 
-A docker container can be built from either
-`docker/Dockerfile` or `docker/Dockerfile-dev`.
+```shell
+docker compose build
+```
 
-When running locally, I use `Dockerfile-dev`, and I mount the directory
-with my github repo to the working directory `/app/dev`.  That way,
-code on my laptop is used by the streamlit app, so its easy to modify
-the code and see the resulting change.
+This will build the images for the development and production servers.
+To start the servers, run:
 
-The build command should be something like:
+```shell
+docker compose up
+```
 
-`docker build -f docker/Dockerfile-dev -t peviewer:v1 .`
+or start them from the Docker Desktop GUI.
 
-### Running for development
+`docker compose up` starts **two** services built from the same image (`docker/Dockerfile`):
 
-If using the Dockerfile-dev build, I run the container with these settings:
+| Service         | Purpose | URL                    |
+|----------------|---------|------------------------|
+| **peviewer-dev** | Development: your repo’s `streamlit-app.py` is bind-mounted into the container, so edits on disk show up in the app. | http://localhost:8502 |
+| **peviewer-prod** | Production-like: no bind mounts; the app is what will be copied into the image at build time, similar to a deployed container. | http://localhost:8501 |
 
-Bind mounts:  source: `/path/to/gitrepo/`   destination: `/app/dev`
+You can open both in the browser at the same time.
 
-Ports:  `8500:8501`
+Typical workflow:
 
+1. `docker compose build` (first time, or after dependency or Dockerfile changes)
+2. `docker compose up`
+3. Use **8502** while working on `streamlit-app.py`; use **8501** to review.
 
-### Or, use a pre-built docker container
+To start a single service: `docker compose up peviewer-dev` or `docker compose up peviewer-prod`.
 
-Pre-built docker containers with everything installed are available here:
+### Manual image build (optional)
+
+If you are not using Compose, you can still build the image yourself, for example:
+
+```
+docker build -f docker/Dockerfile -p 8501:8501 -t peviewer:local .
+```
+
+### Pre-built images
+
+Pre-built images tied to repo commits are published here:
+
 https://github.com/jkanner/pe-viewer/pkgs/container/pe-viewer
 
-Each container corresponds to a commit into the github repo.
-
-
-
-
+Pull and run those images if you prefer not to build locally.
