@@ -1,2 +1,8 @@
 .idea
 *.iml
+__pycache__
+.streamlit
+.DS_Store
+.cache
+.astropy
+.config
