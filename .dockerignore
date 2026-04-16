@@ -1,0 +1,7 @@
+__pycache__
+.streamlit
+.DS_Store
+.cache
+.astropy
+.config
+test.py

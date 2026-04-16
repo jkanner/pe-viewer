@@ -12,7 +12,6 @@ WORKDIR /app
 RUN mkdir -p .streamlit/cache/
 
 COPY --chown=peviewer pe-viewer/ /app/
-COPY --chown=peviewer README.md /app/
 
 # uncomment these to brand the timestamp of the build in the back-hole-ellipse image
 #COPY docker/brand-image.py /tmp
