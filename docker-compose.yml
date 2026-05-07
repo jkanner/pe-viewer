@@ -1,0 +1,21 @@
+services:
+
+  peviewer-dev:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      STREAMLIT_SERVER_FILE_WATCHER_TYPE: poll
+    ports:
+      - "8502:8501"
+    volumes:
+      - ./pe-viewer/:/app/
+
+  peviewer-prod:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    environment:
+      STREAMLIT_SERVER_FILE_WATCHER_TYPE: poll
+    ports:
+      - "8501:8501"
