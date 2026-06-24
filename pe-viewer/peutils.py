@@ -30,10 +30,11 @@ lock = threading.RLock()
 
 # -- Set pelican parameters
 pelicandict = {
-    'GWTC-4.0': (2025,17014085),
-    'GWTC-3-confident': (2023, 8177023),
-    'GWTC-2.1-confident': (2022, 6513631),
-    'GWTC-1-confident': (000, 000)
+    'GWTC-5.0': (2026, [20348005, 20348006]),
+    'GWTC-4.1': (2026, [20275769]),
+    'GWTC-3-confident': (2023, [8177023]),
+    'GWTC-2.1-confident': (2022, [6513631]),
+    'GWTC-1-confident': (000, [000])
     }
 pelicanroot = 'osdf:///gwdata/zenodo/ligo-virgo-kagra'
 
@@ -105,24 +106,28 @@ def load_samples_pelican(event, gwtc=True):
         else:
             fn = spl[-1]
 
-    # -- Construct Pelican ID
-    yr, zenid = pelicandict[catalog]
-    pelicanurl = os.path.join(pelicanroot, str(yr), str(zenid), fn)
-        
-    if event != 'GW170817':
-        tfile = tempfile.NamedTemporaryFile(suffix='.h5')
-        tfile.write(rp.get(pelicanurl).content)
-        samples = read(tfile.name, disable_prior=True)
-    else:
+    # -- GW170817 special case
+    if event == 'GW170817':
         # Use GWTC-1 samples for only GW170817
         url = 'https://dcc.ligo.org/public/0157/P1800370/005/{0}_GWTC-1.hdf5'.format(event)
         r = requests.get(url)
         tfile = tempfile.NamedTemporaryFile(suffix='.h5')
         tfile.write(r.content)
-        if event == 'GW170817':
-            samples = read(tfile.name, path_to_samples="IMRPhenomPv2NRT_lowSpin_posterior", disable_prior=True)
-        else:
+        samples = read(tfile.name, path_to_samples="IMRPhenomPv2NRT_lowSpin_posterior", disable_prior=True)
+        return samples
+            
+    # -- Get all other events from pelican
+    # -- Loop over list of zenodo ID's until we find the right file
+    yr, zenidlist = pelicandict[catalog]
+    for zenid in zenidlist:
+        pelicanurl = os.path.join(pelicanroot, str(yr), str(zenid), fn)
+        try:         
+            tfile = tempfile.NamedTemporaryFile(suffix='.h5')
+            tfile.write(rp.get(pelicanurl).content)
             samples = read(tfile.name, disable_prior=True)
+            break
+        except:
+            pass
 
     try:
         samples.downsample(2000)
