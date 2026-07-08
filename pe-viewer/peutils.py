@@ -30,7 +30,7 @@ lock = threading.RLock()
 
 # -- Set pelican parameters
 pelicandict = {
-    'GWTC-4.0': (2025,17014085),
+    'GWTC-4.1': (2026, 20275769),
     'GWTC-3-confident': (2023, 8177023),
     'GWTC-2.1-confident': (2022, 6513631),
     'GWTC-1-confident': (000, 000)
